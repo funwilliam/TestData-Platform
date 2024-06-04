@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- <style>
+        .font-sets {
+            font-family: Jost, "Microsoft JhengHei", 微軟正黑體, 微软雅黑, sans-serif, 'Noto Sans TC', -apple-system, Arial, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'Nimbus Sans L', Arial, 'Liberation Sans', 'PingFang SC', 'Hiragino Sans GB', 'Source Han Sans CN', 'Source Han Sans SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', 'WenQuanYi Zen Hei', 'ST Heiti', SimHei, 'WenQuanYi Zen Hei Sharp', sans-serif;
+        }
+    
+        img,
+        svg {
+            vertical-align: middle;
+        }
+    
+        .sticky-top {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+        }
+    
+        .topbar {
+            padding: 0.75rem 0;
+            background-color: transparent;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+        }
+    
+        .page-layout {
+            display: grid;
+            grid-template-areas: "left-sidebar main right-sidebar";
+            grid-template-columns: 2fr 9fr 2fr;
+            gap: 1.5rem 2rem;
+        }
+    
+        #ModelSearch-Div {
+            position: relative;
+        }
+    
+        @media (min-width: 1200px) {
+            #ModelSearch-Div {
+                position: absolute;
+                top: 0.875rem;
+                left: 50%;
+                width: 275px;
+                margin-left: -100px;
+            }
+        }
+    
+        .ModelSearch-Button {
+            --modelsearch-searchbox-background: rgba(0, 0, 0, 0.1);
+            --modelsearch-searchbox-color: #fff;
+            --modelsearch-searchbox-focus-background: rgba(0, 0, 0, 0.25);
+            --modelsearch-searchbox-shadow: 0 0 0 0.25rem rgba(255, 228, 132, 0.4);
+            --modelsearch-text-color: #fff;
+            --modelsearch-muted-color: rgba(255, 255, 255, 0.65);
+            width: 100%;
+            height: 38px;
+            margin: 0;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 0.375rem;
+        }
+    
+        .ModelSearch-Button .ModelSearch-Search-Icon {
+            opacity: 0.65;
+        }
+    
+        .ModelSearch-Button-Container {
+            align-items: center;
+            display: flex;
+        }
+    
+        .ModelSearch-Button-Placeholder {
+            font-size: 1rem;
+            font-weight: 550;
+            color: rgba(0, 0, 0, 0.5);
+            padding: 0 1rem 0 1rem;
+        }
+    
+        @media (max-width: 1199.98px) {
+            .ModelSearch-Button-Placeholder {
+                display: none;
+            }
+            .ModelSearch-Button {
+                background-color: transparent;
+            }
+        }
+    
+        .left-sidebar {
+            grid-area: left-sidebar;
+        }
+    
+        .right-sidebar {
+            grid-area: right-sidebar;
+        }
+    
+        .main {
+            grid-area: main;
+        }
+    
+        .bd-links-link {
+            padding: 0.1875rem 0.5rem;
+            margin-top: 0.125rem;
+            margin-left: 1.125rem;
+            color: #212529;
+            text-decoration: none;
+            border-color: transparent;
+            background-color: transparent;
+        }
+    
+        .bd-links-link:hover,
+        .bd-links-link:focus,
+        .bd-links-link.active {
+            color: #000000;
+            background-color: #702CF91A;
+        }
+    
+        .bd-links-link.active {
+            font-weight: 600;
+        }
+    
+        .bd-links-link-detail {
+            padding: 0.1875rem 0.5rem;
+            margin-top: 0.125rem;
+            margin-left: 1.125rem;
+            color: #555b61;
+            text-decoration: none;
+            border-color: transparent;
+            background-color: transparent;
+        }
+    
+        .d-inline-block {
+            display: inline-block !important;
+        }
+    
+        .overflow-adjust {
+            overflow: auto;
+            scrollbar-width: none;
+        }
+    
+        footer p {
+            letter-spacing: 2px;
+        }
+    </style> -->
+    
+
+    {% block title %}<title>Base - 測試數據整合平台</title>{% endblock %}
+</head>
+
+<body class="bg-light font-sets">
+    <header id="header" class="navbar navbar-expand-lg navbar-light bg-light topbar shadow sticky-top">
+        <nav class="container-xxl bd-gutter flex-wrap flex-xl-nowrap" aria-label="功能列">
+            <a class="navbar-brand p-1 me-0 me-xl-2 fw-bold" href="{{ url_for('home.index') }}" aria-label="標題">測試紀錄系統</a>
+            <div class="d-flex">
+                <div class="ModelSearch-Div px-2">
+                    <button type="button" id="search-data-trigger" class="ModelSearch-Button" aria-label="搜尋觸發按鈕" data-bs-toggle="modal" data-bs-target="#search-data-modal" aria-current="true">
+                        <span class="ModelSearch-Button-Container">
+                            <svg width="20" height="20" class="ModelSearch-Search-Icon" viewBox="0 0 20 20" aria-hidden="true">
+                                <path
+                                    d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z"
+                                    stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                </path>
+                            </svg>
+                            <span class="ModelSearch-Button-Placeholder">Search:&ensp;Model Name</span>
+                        </span>
+                    </button>
+                </div>
+                <button class="navbar-toggler d-flex d-xl-none order-3 p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-label="Toggle navigation">
+                    <i class="bi bi-three-dots" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="offcanvas-xl offcanvas-end flex-grow-1" tabindex="-1" id="bdNavbar"
+                aria-labelledby="bdNavbarOffcanvasLabel" data-bs-scroll="true">
+                <div class="offcanvas-header px-4 pb-0">
+                    <h5 class="offcanvas-title text-white" id="bdNavbarOffcanvasLabel">Bootstrap</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                        aria-label="Close" data-bs-target="#bdNavbar"></button>
+                </div>
+                <div class="offcanvas-body p-4 pt-0 p-lg-0">
+                    <hr class="d-lg-none text-white-50">
+                    <ul class="navbar-nav flex-row flex-wrap">
+                        <li class="nav-item col-6 col-lg-auto">
+                            <button type="button" id="dashboardModal-trigger" class="nav-link py-2 px-lg-2"
+                                data-bs-toggle="modal" data-bs-target="#parameterTableModal" aria-current="true">
+                                系統狀態
+                            </button>
+                        </li>
+                        <li class="nav-item col-6 col-lg-auto">
+                            <button type="button" class="nav-link py-2 px-lg-2">
+                                規格定義
+                            </button>
+                        </li>
+                        <li class="nav-item col-6 col-lg-auto">
+                            <button type="button" class="nav-link py-2 px-lg-2">
+                                測試紀錄
+                            </button>
+                        </li>
+                        <li class="nav-item col-6 col-lg-auto">
+                            <button type="button" class="nav-link py-2 px-lg-2">
+                                匯入 / 匯出
+                            </button>
+                        </li>
+                    </ul>
+                    <hr class="d-lg-none text-white-50">
+                    <ul class="navbar-nav flex-row flex-wrap ms-md-auto">
+                        <li class="nav-item col-6 col-lg-auto">
+                            <a class="nav-link py-1 px-0 px-lg-2 d-flex align-items-center" href="#" target="_blank" rel="noopener">
+                                <i class="bi bi-envelope fs-5"></i>
+                                <small class="d-lg-none ms-2">mailbox</small>
+                            </a>
+                        </li>
+                        <li class="nav-item col-6 col-lg-auto">
+                            <a class="nav-link py-1 px-0 px-lg-2 d-flex align-items-center" href="#" target="_blank" rel="noopener">
+                                <i class="bi bi-bell-fill fs-5"></i>
+                                <small class="d-lg-none ms-2">notification</small>
+                            </a>
+                        </li>
+                        <li class="nav-item py-1 col-12 col-lg-auto">
+                            <div class="vr d-none d-lg-flex h-100 mx-lg-2 text-white"></div>
+                            <hr class="d-lg-none text-white-50">
+                        </li>
+                        <li class="nav-item dropdown">
+                            <button type="button" class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle"
+                                data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static">
+                                <span class="d-lg-none" aria-hidden="true">測試紀錄系統</span>
+                                <span class="mx-1">ver 1.0</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><h6 class="dropdown-header">208PDF文件添加</h6> </li>
+                                <li><a class="dropdown-item current" aria-current="true" href="/docs/5.2/utilities/background/">ver 1.0</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">自動</h6></li>
+                                <li><a class="dropdown-item" href="https://getbootstrap.com/docs/4.6/">ver 4.6.x</a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div>
+        <div id="padding-top"></div>
+        <div id="content-container" class="container-xxl mt-3 my-md-4 page-layout">
+            {% block content %}{% endblock %}
+        </div>
+        <div id="padding-bottom"></div>
+    </div>
+    <footer id="footer" class="fixed-bottom bg-white shadow">
+        <p class="w-100 py-3 m-0 text-center font-monospace fw-bold">COPYRIGHT © 2024 MINMAX TECH - ENGINEER DEPARTMENT - Yu Chan</p>
+    </footer>
+    {% block extra_js %}{% endblock %}
+    <div class="modal fade" id="search-data-modal" tabindex="-1" data-bs-backdrop="true" data-bs-keyboard="true" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="top: 15%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="parameterTableModalLabel">以產品型號搜尋</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="seryName-input" class="col-form-label">型號:</label>
+                    <input type="text" class="form-control" id="seryName-input" autocomplete="off" list="seryName-list">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/danfojs@1.1.1/lib/bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/setup.js') }}"></script>
+    {% block include %}{% endblock %}
+
+</body>
+</html>

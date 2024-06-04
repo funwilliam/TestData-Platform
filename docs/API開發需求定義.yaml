@@ -1,0 +1,232 @@
+openapi: 3.0.0
+info:
+  title: Product API
+  description: 查詢產品的基本信息
+  version: 1.0.0
+
+servers:
+  - url: https://{hostname}/api
+    variables:
+      hostname:
+        default: 192.168.1.40
+        description: The hostname of the server
+
+paths:
+  /products/overview:
+    get:
+      summary: 查詢全部產品的基本信息 (Get All Product Overview)
+      operationId: getAllProductOverview
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                      - error
+                    description: 業務邏輯狀態
+                  message:
+                    type: string
+                    description: 訊息
+                  data:
+                    type: object
+                    properties:
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            model:
+                              type: string
+                              description: 型號
+                            series:
+                              type: string
+                              description: 系列
+                            productType:
+                              type: string
+                              enum:
+                                - AC
+                                - DC
+                              description: 產品類型
+                            designCompletionDate:
+                              type: string
+                              format: date-time
+                              description: 產品設計完成日期 (Ex. 'YYYY-MM-DDT17:20+08:00' 當日下班時間)
+                      total:
+                        type: integer
+                        description: 回傳總數
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: 業務邏輯狀態
+                  message:
+                    type: string
+                    description: 錯誤訊息
+
+  /products/overview/series/{sery-name}:
+    get:
+      summary: 以系列名稱查詢產品的基本信息 (Get Product Overview by Sery Name)
+      operationId: getProductOverviewBySeryName
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: path
+          name: sery-name
+          required: true
+          schema:
+            type: string
+          description: 指定要查詢的系列
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                      - error
+                    description: 業務邏輯狀態
+                  message:
+                    type: string
+                    description: 訊息
+                  data:
+                    type: object
+                    properties:
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            model:
+                              type: string
+                              description: 型號
+                            series:
+                              type: string
+                              description: 系列
+                            productType:
+                              type: string
+                              enum:
+                                - AC
+                                - DC
+                              description: 產品類型
+                            designCompletionDate:
+                              type: string
+                              format: date-time
+                              description: 產品設計完成日期 (Ex. 'YYYY-MM-DDT17:20+08:00' 當日下班時間)
+                      total:
+                        type: integer
+                        description: 回傳總數
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: 業務邏輯狀態
+                  message:
+                    type: string
+                    description: 錯誤訊息
+
+  /products/overview/models/{model-name}:
+    get:
+      summary: 以型號名稱查詢產品的基本信息 (Get Product Overview by Model Name)
+      operationId: getProductOverviewByModelName
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: path
+          name: model-name
+          required: true
+          schema:
+            type: string
+          description: 指定要查詢的產品型號
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                      - error
+                    description: 業務邏輯狀態
+                  message:
+                    type: string
+                    description: 訊息
+                  data:
+                    type: object
+                    properties:
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            model:
+                              type: string
+                              description: 型號
+                            series:
+                              type: string
+                              description: 系列
+                            productType:
+                              type: string
+                              enum:
+                                - AC
+                                - DC
+                              description: 產品類型
+                            designCompletionDate:
+                              type: string
+                              format: date-time
+                              description: 產品設計完成日期 (Ex. 'YYYY-MM-DDT17:20+08:00' 當日下班時間)
+                      total:
+                        type: integer
+                        description: 回傳總數
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: 業務邏輯狀態
+                  message:
+                    type: string
+                    description: 錯誤訊息
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: API_KEY

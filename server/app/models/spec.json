@@ -1,0 +1,361 @@
+[
+    {
+        "Type": "溫度",
+        "Conditions": [],
+        "Values": {
+            "UseAbsVal": false,
+            "LowerLimit": 20,
+            "UpperLimit": 40
+        },
+        "ValCategory": "nominal",
+        "Unit": "°C"
+    },
+    {
+        "Type": "溫度",
+        "Conditions": [],
+        "Values": -40,
+        "ValCategory": "minimum",
+        "Unit": "°C"
+    },
+    {
+        "Type": "溫度",
+        "Conditions": [],
+        "Values": 68,
+        "ValCategory": "maximum",
+        "Unit": "°C"
+    },
+    {
+        "Type": "輸入電壓",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            }
+        ],
+        "Values": 18,
+        "ValCategory": "minimum",
+        "Unit": "V",
+        "Characteristics": "DC"
+    },
+    {
+        "Type": "輸入電壓",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            }
+        ],
+        "Values": 48,
+        "ValCategory": "nominal",
+        "Unit": "V",
+        "Characteristics": "DC"
+    },
+    {
+        "Type": "輸入電壓",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            }
+        ],
+        "Values": 75,
+        "ValCategory": "maximum",
+        "Unit": "V",
+        "Characteristics": "DC"
+    },
+    {
+        "Type": "輸出電壓",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            }
+        ],
+        "Values": 12,
+        "ValCategory": "輸出1",
+        "Unit": "V",
+        "Characteristics": "DC"
+    },
+    {
+        "Type": "輸出電壓",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            }
+        ],
+        "Values": -12,
+        "ValCategory": "輸出2",
+        "Unit": "V",
+        "Characteristics": "DC"
+    },
+    {
+        "Type": "負載電流",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            },
+            {
+                "Type": "輸出電壓",
+                "ValCategory": "輸出1",
+                "Inherit": [
+                    {
+                        "Type": "溫度"
+                    }
+                ]
+            }
+        ],
+        "Values": 417,
+        "ValCategory": "maximum",
+        "Unit": "A",
+        "Scale": "micro",
+        "Characteristics": "DC"
+    },
+    {
+        "Type": "負載電流",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            },
+            {
+                "Type": "輸出電壓",
+                "ValCategory": "輸出1",
+                "Inherit": [
+                    {
+                        "Type": "溫度"
+                    }
+                ]
+            }
+        ],
+        "Values": 0,
+        "ValCategory": "minimum",
+        "Unit": "A",
+        "Scale": "micro",
+        "Characteristics": "DC"
+    },
+    {
+        "Type": "負載電流",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            },
+            {
+                "Type": "輸出電壓",
+                "ValCategory": "輸出2",
+                "Inherit": [
+                    {
+                        "Type": "溫度"
+                    }
+                ]
+            }
+        ],
+        "Values": -417,
+        "ValCategory": "maximum",
+        "Unit": "A",
+        "Scale": "micro",
+        "Characteristics": "DC"
+    },
+    {
+        "Type": "負載電流",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            },
+            {
+                "Type": "輸出電壓",
+                "ValCategory": "輸出2",
+                "Inherit": [
+                    {
+                        "Type": "溫度"
+                    }
+                ]
+            }
+        ],
+        "Values": 0,
+        "ValCategory": "minimum",
+        "Unit": "A",
+        "Scale": "micro",
+        "Characteristics": "DC"
+    },
+    {
+        "Type": "負載電流",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            }
+        ],
+        "Values": {
+            "Aggregate": [
+                {
+                    "Type": "負載電流",
+                    "ValCategory": "maximum",
+                    "Conditions": [
+                        {
+                            "Type": "輸出電壓",
+                            "ValCategory": "輸出1"
+                        }
+                    ],
+                    "Inherit": [
+                        {
+                            "Type": "溫度"
+                        }
+                    ]
+                },
+                {
+                    "Type": "負載電流",
+                    "ValCategory": "maximum",
+                    "Conditions": [
+                        {
+                            "Type": "輸出電壓",
+                            "ValCategory": "輸出2"
+                        }
+                    ],
+                    "Inherit": [
+                        {
+                            "Type": "溫度"
+                        }
+                    ]
+                }
+            ]
+        },
+        "ValCategory": "aggregated_maximum"
+    },
+    {
+        "Type": "負載電流",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            }
+        ],
+        "Values": {
+            "Aggregate": [
+                {
+                    "Type": "負載電流",
+                    "ValCategory": "minimum",
+                    "Conditions": [
+                        {
+                            "Type": "輸出電壓",
+                            "ValCategory": "輸出1"
+                        }
+                    ],
+                    "Inherit": [
+                        {
+                            "Type": "溫度"
+                        }
+                    ]
+                },
+                {
+                    "Type": "負載電流",
+                    "ValCategory": "minimum",
+                    "Conditions": [
+                        {
+                            "Type": "輸出電壓",
+                            "ValCategory": "輸出2"
+                        }
+                    ],
+                    "Inherit": [
+                        {
+                            "Type": "溫度"
+                        }
+                    ]
+                }
+            ]
+        },
+        "ValCategory": "aggregated_minimum"
+    },
+    {
+        "Type": "輸入電流",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            },
+            {
+                "Type": "負載電流",
+                "ValCategory": "aggregated_maximum",
+                "Inherit": [
+                    {
+                        "Type": "溫度"
+                    }
+                ]
+            }
+        ],
+        "Values": 241,
+        "ValCategory": "滿載",
+        "Unit": "A",
+        "Scale": "micro",
+        "Characteristics": "DC"
+    },
+    {
+        "Type": "輸入電流",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            },
+            {
+                "Type": "負載電流",
+                "ValCategory": "aggregated_minimum",
+                "Inherit": [
+                    {
+                        "Type": "溫度"
+                    }
+                ]
+            }
+        ],
+        "Values": 8,
+        "ValCategory": "空載",
+        "Unit": "A",
+        "Scale": "micro",
+        "Characteristics": "DC"
+    },
+    {
+        "Type": "過負載電流保護",
+        "Conditions": [
+            {
+                "Type": "溫度",
+                "ValCategory": "nominal"
+            },
+            {
+                "Type": "輸入電壓",
+                "ValCategory": "minimum",
+                "Inherit": [
+                    {
+                        "Type": "溫度"
+                    }
+                ]
+            }
+        ],
+        "Dependencies": [
+            {
+                "Type": "負載電流",
+                "ValCategory": "maximum",
+                "Inherit": [
+                    {
+                        "Type": "溫度"
+                    }
+                ],
+                "Parameter": [
+                    {
+                        "Type": "輸出電壓"
+                    }
+                ]
+            }
+        ],
+        "Values": {
+            "UseAbsVal": true,
+            "LowerLimit": {
+                "Formula": "1.1*$(0)"
+            },
+            "UpperLimit": null
+        },
+        "ValCategory": "over_maximum",
+        "Unit": null
+    }
+]

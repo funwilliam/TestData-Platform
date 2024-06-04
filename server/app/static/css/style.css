@@ -1,0 +1,95 @@
+.font-sets {
+    font-family: Jost, "Microsoft JhengHei", 微軟正黑體, 微软雅黑, sans-serif, 'Noto Sans TC', -apple-system, Arial, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'Nimbus Sans L', Arial, 'Liberation Sans', 'PingFang SC', 'Hiragino Sans GB', 'Source Han Sans CN', 'Source Han Sans SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', 'WenQuanYi Zen Hei', 'ST Heiti', SimHei, 'WenQuanYi Zen Hei Sharp', sans-serif;
+}
+
+img,
+svg {
+    vertical-align: middle;
+}
+
+.sticky-top {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+.topbar {
+    padding: 0.75rem 0;
+    background-color: transparent;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.page-layout {
+    display: grid;
+    grid-template-areas: "left-sidebar main right-sidebar";
+    grid-template-columns: 2fr 9fr 2fr;
+    gap: 1.5rem 2rem;
+}
+
+.ModelSearch-Div {
+    position: relative;
+}
+
+@media (min-width: 1200px) {
+    .ModelSearch-Div {
+        position: absolute;
+        top: 0.875rem;
+        left: 50%;
+        width: 275px;
+        margin-left: -100px;
+    }
+}
+
+.ModelSearch--active {
+    overflow: hidden !important;
+}
+
+.ModelSearch-Button {
+    --modelsearch-searchbox-background: rgba(0, 0, 0, 0.1);
+    --modelsearch-searchbox-color: #fff;
+    --modelsearch-searchbox-focus-background: rgba(0, 0, 0, 0.25);
+    --modelsearch-searchbox-shadow: 0 0 0 0.25rem rgba(255, 228, 132, 0.4);
+    --modelsearch-text-color: #fff;
+    --modelsearch-muted-color: rgba(255, 255, 255, 0.65);
+    width: 100%;
+    height: 38px;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 0.375rem;
+}
+
+.ModelSearch-Button .ModelSearch-Search-Icon {
+    opacity: 0.65;
+}
+
+.ModelSearch-Button-Container {
+    align-items: center;
+    display: flex;
+}
+
+.ModelSearch-Button-Placeholder {
+    font-size: 1rem;
+    font-weight: 550;
+    color: rgba(0, 0, 0, 0.5);
+    padding: 0 1rem 0 1rem;
+}
+
+@media (max-width: 1199.98px) {
+    .ModelSearch-Button-Placeholder {
+        display: none;
+    }
+
+    .ModelSearch-Button {
+        background-color: transparent;
+    }
+}
+
+.overflow-adjust {
+    overflow: auto;
+    scrollbar-width: none;
+}
+
+footer p {
+    letter-spacing: 2px;
+}
