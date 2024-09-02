@@ -1,0 +1,387 @@
+{
+    "Model": "MJWI10-48D05",
+    "Specifications": {
+        "ProductType": {
+            "ConverterType": "DC->DC",
+            "OutputRegulationType": "Regulated",
+            "Remote ON/OFF": true,
+            "OutputTrim": false,
+            "I/O Isolation": "1500 VDC",
+            "InsulationSystemType": "Functional",
+            "MountingType": "Board Mount-Through Hole Device",
+            "PackageType": "Inch",
+            "Applications": "Industrial"
+        },
+        "OutputQuantity": 2,
+        "Parts": {
+            "Case": {
+                "RequiredQuerySchema":[
+                    "Number"
+                ],
+                "Data": [
+                    {
+                        "Number": "1",
+                        "Statement": "Case"
+                    }
+                ]
+            },
+            "Pin": {
+                "RequiredQuerySchema": [
+                    "Number"
+                ],
+                "Data": [
+                    {
+                        "Number": "1",
+                        "Statement": "+Vin"
+                    },
+                    {
+                        "Number": "2",
+                        "Statement": "-Vin"
+                    },
+                    {
+                        "Number": "3",
+                        "Statement": "+Vout"
+                    },
+                    {
+                        "Number": "4",
+                        "Statement": "Common"
+                    },
+                    {
+                        "Number": "5",
+                        "Statement": "-Vout"
+                    },
+                    {
+                        "Number": "6",
+                        "Statement": "Remote On/Off"
+                    }
+                ]
+            }
+        },
+        "Input": {
+            "RequiredQuerySchema": [
+                "Number"
+            ],
+            "Data": [
+                {
+                    "Number": "1",
+                    "Pin": ["1", "2"]
+                }
+            ]
+        },
+        "Output": {
+            "RequiredQuerySchema": [
+                "Number"
+            ],
+            "Data": [
+                {
+                    "Number": "1",
+                    "Pin": ["3", "4"]
+                },
+                {
+                    "Number": "2",
+                    "Pin": ["4", "5"]
+                }
+            ]
+        },
+        "OperatingAmbientTemperature": {
+            "RequiredQuerySchema": [
+                "ValueLabel"
+            ],
+            "Data": [
+                {
+                    "ValueLabel": ["低溫", "Lowest", "LowerLimit"],
+                    "ExactValue": {
+                        "Value": -40,
+                        "Unit": "degC"
+                    }
+                },
+                {
+                    "ValueLabel": ["常溫", "Normal"],
+                    "ExactValue": {
+                        "Value": 25,
+                        "Unit": "degC"
+                    }
+                },
+                {
+                    "ValueLabel": ["高溫", "Highest", "UpperLimit"],
+                    "ExactValue": {
+                        "Value": 60,
+                        "Unit": "degC"
+                    }
+                }
+            ]
+        },
+        "InputVoltage": {
+            "RequiredQuerySchema": [
+                "ValueLabel"
+            ],
+            "Data": [
+                {
+                    "ValueLabel": ["LowLine"],
+                    "ExactValue": {
+                        "Value": 18,
+                        "Unit": "volt",
+                        "SignalType": "DC"
+                    }
+                },
+                {
+                    "ValueLabel": ["NominalLine"],
+                    "ExactValue": {
+                        "Value": 48,
+                        "Unit": "volt",
+                        "SignalType": "DC"
+                    }
+                },
+                {
+                    "ValueLabel": ["HighLine"],
+                    "ExactValue": {
+                        "Value": 75,
+                        "Unit": "volt",
+                        "SignalType": "DC"
+                    }
+                }
+            ]
+        },
+        "OutputVoltage": {
+            "RequiredQuerySchema": [
+                "OutputNumber",
+                "ValueLabel"
+            ],
+            "Data": [
+                {
+                    "OutputNumber": "1",
+                    "ValueLabel": ["Nominal"],
+                    "ExactValue": {
+                        "Value": 5,
+                        "Unit": "volt",
+                        "SignalType": "DC"
+                    }
+                },
+                {
+                    "OutputNumber": "2",
+                    "ValueLabel": ["Nominal"],
+                    "ExactValue": {
+                        "Value": -5,
+                        "Unit": "volt",
+                        "SignalType": "DC"
+                    }
+                }
+            ]
+        },
+        "OutputCurrent": {
+            "RequiredQuerySchema": [
+                "OutputNumber",
+                "ValueLabel"
+            ],
+            "Data": [
+                {
+                    "OutputNumber": "1",
+                    "ValueLabel": ["MaximumLoad"],
+                    "ExactValue": {
+                        "Value": 1000,
+                        "Unit": "milliampere",
+                        "SignalType": "DC"
+                    }
+                },
+                {
+                    "OutputNumber": "1",
+                    "ValueLabel": ["MinimumLoad"],
+                    "ExactValue": {
+                        "Value": 150,
+                        "Unit": "milliampere",
+                        "SignalType": "DC"
+                    }
+                },
+                {
+                    "OutputNumber": "1",
+                    "ValueLabel": ["NoLoad"],
+                    "ExactValue": {
+                        "Value": 0,
+                        "Unit": "milliampere",
+                        "SignalType": "DC"
+                    }
+                },
+                {
+                    "OutputNumber": "2",
+                    "ValueLabel": ["MaximumLoad"],
+                    "ExactValue": {
+                        "Value": -1000,
+                        "Unit": "milliampere",
+                        "SignalType": "DC"
+                    }
+                },
+                {
+                    "OutputNumber": "2",
+                    "ValueLabel": ["MinimumLoad"],
+                    "ExactValue": {
+                        "Value": -150,
+                        "Unit": "milliampere",
+                        "SignalType": "DC"
+                    }
+                },
+                {
+                    "OutputNumber": "2",
+                    "ValueLabel": ["NoLoad"],
+                    "ExactValue": {
+                        "Value": -150,
+                        "Unit": "milliampere",
+                        "SignalType": "DC"
+                    }
+                }
+            ]
+        },
+        "Protection": {
+            "ShortCircuitProtection": "Continuous"
+        }
+    },
+    "QualityTest": {
+        "InputCurrent": {
+            "RequiredQuerySchema": [
+                "InputVoltage",
+                "OutputCurrent"
+            ],
+            "Data": [
+                {
+                    "InputVoltage": "NominalLine",
+                    "OutputCurrent": "MaximumLoad",
+                    "Range": {
+                        "Lower": null,
+                        "Upper": {
+                            "Value": 251,
+                            "Unit": "milliampere",
+                            "SignalType": "DC"
+                        }
+                    }
+                },
+                {
+                    "InputVoltage": "NominalLine",
+                    "OutputCurrent": "NoLoad",
+                    "Range": {
+                        "Lower": null,
+                        "Upper": {
+                            "Value": 20,
+                            "Unit": "milliampere",
+                            "SignalType": "DC"
+                        }
+                    }
+                }
+            ]
+        },
+        "InputReflectedRippleCurrent": {
+            "RequiredQuerySchema": [
+                "InputVoltage",
+                "OutputCurrent"
+            ],
+            "Data": [
+                {
+                    "InputVoltage": "NominalLine",
+                    "OutputCurrent": "MaximumLoad",
+                    "Range": {
+                        "Lower": null,
+                        "Upper": {
+                            "Value": 30,
+                            "Unit": "milliampere",
+                            "SignalType": "P-P"
+                        }
+                    }
+                }
+            ]
+        },
+        "OutputVoltage": {
+            "RequiredQuerySchema": [
+                "OutputNumber",
+                "OutputCurrent"
+            ],
+            "Data": [
+                {
+                    "OutputNumber": "1",
+                    "OutputCurrent": "NoLoad",
+                    "Range": {
+                        "Lower": null,
+                        "Upper": {
+                            "Value": 5.5,
+                            "Unit": "volt",
+                            "SignalType": "DC"
+                        }
+                    }
+                },
+                {
+                    "OutputNumber": "1",
+                    "OutputCurrent": "MinimumLoad",
+                    "Range": {
+                        "Lower": {
+                            "Value": "0.98 * $Specifications.OutputVoltage.query(OutputNumber=$self.OutputNumber, ValueLabel='Nominal'",
+                            "Unit": "volt",
+                            "SignalType": "DC"
+                        },
+                        "Upper": {
+                            "Value": "1.02 * $Specifications.OutputVoltage.query(OutputNumber=$self.OutputNumber, ValueLabel='Nominal'",
+                            "Unit": "volt",
+                            "SignalType": "DC"
+                        }
+                    }
+                },
+                {
+                    "OutputNumber": "1",
+                    "OutputCurrent": "MaximumLoad",
+                    "Range": {
+                        "Lower": {
+                            "Value": "0.98 * $Specifications.OutputVoltage.query(OutputNumber=$self.OutputNumber, ValueLabel='Nominal'",
+                            "Unit": "volt",
+                            "SignalType": "DC"
+                        },
+                        "Upper": {
+                            "Value": "1.02 * $Specifications.OutputVoltage.query(OutputNumber=$self.OutputNumber, ValueLabel='Nominal'",
+                            "Unit": "volt",
+                            "SignalType": "DC"
+                        }
+                    }
+                },
+                {
+                    "OutputNumber": "2",
+                    "OutputCurrent": "NoLoad",
+                    "Range": {
+                        "Lower": null,
+                        "Upper": {
+                            "Value": -5.5,
+                            "Unit": "volt",
+                            "SignalType": "DC"
+                        }
+                    }
+                },
+                {
+                    "OutputNumber": "2",
+                    "OutputCurrent": "MinimumLoad",
+                    "Range": {
+                        "Lower": {
+                            "Value": "0.98 * $Specifications.OutputVoltage.query(OutputNumber=$self.OutputNumber, ValueLabel='Nominal'",
+                            "Unit": "volt",
+                            "SignalType": "DC"
+                        },
+                        "Upper": {
+                            "Value": "1.02 * $Specifications.OutputVoltage.query(OutputNumber=$self.OutputNumber, ValueLabel='Nominal'",
+                            "Unit": "volt",
+                            "SignalType": "DC"
+                        }
+                    }
+                },
+                {
+                    "OutputNumber": "2",
+                    "OutputCurrent": "MaximumLoad",
+                    "Range": {
+                        "Lower": {
+                            "Value": "0.98 * $Specifications.OutputVoltage.query(OutputNumber=$self.OutputNumber, ValueLabel='Nominal'",
+                            "Unit": "volt",
+                            "SignalType": "DC"
+                        },
+                        "Upper": {
+                            "Value": "1.02 * $Specifications.OutputVoltage.query(OutputNumber=$self.OutputNumber, ValueLabel='Nominal')",
+                            "Unit": "volt",
+                            "SignalType": "DC"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

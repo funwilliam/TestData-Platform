@@ -1,4 +1,4 @@
-from app.models.base import db
+from server.models.base import db
 from datetime import datetime, date
 
 
@@ -8,7 +8,7 @@ class 產品型號(db.Model):
     產品型號名稱: str = db.Column(db.String, nullable=False, primary_key=True, index=True)
     產品系列名稱: str = db.Column(db.String)
 
-    輸入源類型: str = db.Column(db.String, nullable=False) # DC, AC
+    轉換類型: str = db.Column(db.String, nullable=False) # DC, AC
     穩壓類型: str = db.Column(db.String) # Regulated, Unregulated, null: 缺少資料
     封裝類型: str = db.Column(db.String) # SIP, SMD, DIP, Inch, Brick, Screw, Terminal, null: 缺少資料
     安裝類型: str = db.Column(db.String) # 'Board Mount-Surface Mount Device', 'Board Mount-Through Hole Device', 'Chassis & DIN-Rail Mount', null: 缺少資料

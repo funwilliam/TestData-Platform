@@ -9,7 +9,7 @@ def require_api_key(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         api_key = request.headers.get('API_KEY')
-        API_KEY = os.getenv('API_KEY')
+        API_KEY = os.getenv('DEFAULT_API_KEY')
         if api_key != API_KEY:
             return jsonify({
                 "status": "error",

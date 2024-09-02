@@ -1,4 +1,4 @@
-from app.models.base import db
+from server.models.base import db
 from typing import Dict, Any
 from datetime import datetime
 from uuid import UUID
