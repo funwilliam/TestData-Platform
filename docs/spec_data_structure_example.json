@@ -1,10 +1,11 @@
 {
     "Model": "MJWI10-48D05",
     "GeneralSpecifications": {
-        "ProductType": {
+        "ProductMeta": {
+            "OutputQuantity": 2,
             "ConverterType": "DC->DC",
-            "OutputRegulationType": "Regulated",
-            "RemoteOnOff": true,
+            "OutputRegulationType": true,
+            "RemoteOnOffType": "Enable High",
             "OutputTrim": false,
             "IoIsolation": "1500 VDC",
             "InsulationSystemType": "Functional",
@@ -12,7 +13,6 @@
             "PackageType": "Inch",
             "Applications": "Industrial"
         },
-        "OutputQuantity": 2,
         "Component": {
             "RequiredQuerySchema":[
                     "ComponentType",
@@ -85,7 +85,7 @@
             ],
             "Instances": [
                 {
-                    "ValueLabel": ["低溫", "Lowest", "LowerLimit"],
+                    "ValueLabel": ["低溫", "LowerLimit"],
                     "ExactValue": {
                         "Value": -40,
                         "Unit": "degC"
@@ -99,7 +99,7 @@
                     }
                 },
                 {
-                    "ValueLabel": ["高溫", "Highest", "UpperLimit"],
+                    "ValueLabel": ["高溫", "UpperLimit"],
                     "ExactValue": {
                         "Value": 60,
                         "Unit": "degC"
@@ -322,6 +322,7 @@
                     }
                 },
                 {
+                    "RemoteControlMode": "working",
                     "InputVoltage": "NominalLine",
                     "OutputCurrent": "NoLoad",
                     "Range": {
@@ -334,12 +335,13 @@
                     }
                 },
                 {
+                    "RemoteControlMode": "standby",
                     "InputVoltage": "NominalLine",
                     "OutputCurrent": "NoLoad",
                     "Range": {
                         "Lower": null,
                         "Upper": {
-                            "Value": 20,
+                            "Value": 10,
                             "Unit": "milliampere",
                             "SignalType": "DC"
                         }
@@ -491,9 +493,27 @@
             ]
         },
         "LoadRegulation": {
-            "RequiredQuerySchema": [],
+            "RequiredQuerySchema": [
+                "OutputNumber"
+            ],
             "Instances": [
                 {
+                    "OutputNumber": "1",
+                    "Range": {
+                        "Lower": {
+                            "Value": 98.8,
+                            "Unit": "percent",
+                            "SignalType": null
+                        },
+                        "Upper": {
+                            "Value": 101.2,
+                            "Unit": "percent",
+                            "SignalType": null
+                        }
+                    }
+                },
+                {
+                    "OutputNumber": "2",
                     "Range": {
                         "Lower": {
                             "Value": 98.8,
@@ -510,9 +530,27 @@
             ]
         },
         "LineRegulation": {
-            "RequiredQuerySchema": [],
+            "RequiredQuerySchema": [
+                "OutputNumber"
+            ],
             "Instances": [
                 {
+                    "OutputNumber": "1",
+                    "Range": {
+                        "Lower": {
+                            "Value": 99,
+                            "Unit": "percent",
+                            "SignalType": null
+                        },
+                        "Upper": {
+                            "Value": 101,
+                            "Unit": "percent",
+                            "SignalType": null
+                        }
+                    }
+                },
+                {
+                    "OutputNumber": "2",
                     "Range": {
                         "Lower": {
                             "Value": 99,
@@ -530,10 +568,12 @@
         },
         "RippleAndNoise": {
             "RequiredQuerySchema": [
+                "OutputNumber",
                 "ValueLabel"
             ],
             "Instances": [
                 {
+                    "OutputNumber": "1",
                     "ValueLabel": ["PeakToPeakMaximum"],
                     "Range": {
                         "Lower": null,
@@ -545,6 +585,31 @@
                     }
                 },
                 {
+                    "OutputNumber": "2",
+                    "ValueLabel": ["PeakToPeakMaximum"],
+                    "Range": {
+                        "Lower": null,
+                        "Upper": {
+                            "Value": 100,
+                            "Unit": "millivolt",
+                            "SignalType": "P-P"
+                        }
+                    }
+                },
+                {
+                    "OutputNumber": "1",
+                    "ValueLabel": ["PeakToPeakExtreme"],
+                    "Range": {
+                        "Lower": null,
+                        "Upper": {
+                            "Value": 150,
+                            "Unit": "millivolt",
+                            "SignalType": "P-P"
+                        }
+                    }
+                },
+                {
+                    "OutputNumber": "2",
                     "ValueLabel": ["PeakToPeakExtreme"],
                     "Range": {
                         "Lower": null,
@@ -609,9 +674,34 @@
             ]
         },
         "Efficiency": {
-            "RequiredQuerySchema": [],
+            "RequiredQuerySchema": [
+                "InputVoltage"
+            ],
             "Instances": [
                 {
+                    "InputVoltage": "LowLine",
+                    "Range": {
+                        "Lower": {
+                            "Value": 83,
+                            "Unit": "percent",
+                            "SignalType": null
+                        },
+                        "Upper": null
+                    }
+                },
+                {
+                    "InputVoltage": "NominalLine",
+                    "Range": {
+                        "Lower": {
+                            "Value": 83,
+                            "Unit": "percent",
+                            "SignalType": null
+                        },
+                        "Upper": null
+                    }
+                },
+                {
+                    "InputVoltage": "HighLine",
                     "Range": {
                         "Lower": {
                             "Value": 83,
@@ -639,7 +729,7 @@
                 }
             ]
         },
-        "OverloadProtection": {
+        "OverloadCurrentProtection": {
             "RequiredQuerySchema": [],
             "Instances": [
                 {
@@ -676,7 +766,7 @@
                     }
                 },
                 {
-                    "RemoteControlMode": "pending",
+                    "RemoteControlMode": "standby",
                     "Range": {
                         "Lower": {
                             "Value": 0,
@@ -709,7 +799,7 @@
                     }
                 },
                 {
-                    "RemoteControlMode": "pending",
+                    "RemoteControlMode": "standby",
                     "Range": {
                         "Lower": {
                             "Value": -500,

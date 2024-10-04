@@ -8,7 +8,6 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'defaultsecretkey')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///default.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    # app.config['SQLALCHEMY_ECHO'] = True
 
 class DevelopmentConfig(Config):
     DEBUG = True

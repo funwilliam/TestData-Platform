@@ -3,13 +3,10 @@ from server.models.電器特性物件 import 輸入, 輸出, 輸入電壓, 輸�
 
 
 class 產品:
-    def __init__(
-            self,
-            model_number: str,
-            ) -> None:
+    def __init__(self, model_number: str) -> None:
         self.model_number: str = model_number
         self.output_quantity: int = 0
-        self.input: Dict[str, 輸入] = {}
+        self.inputs: Dict[str, 輸入] = {}
         self.outputs: Dict[str, 輸出] = {}
         self.input_voltage_definitions: Dict[Literal['LowLine', 'NominalLine', 'HighLine'], 輸入電壓] = {}
         self.output_voltage_definitions: Dict[str, 輸出電壓] = {}
@@ -21,5 +18,10 @@ class 產品:
             if out is output:
                 return key_number
             
-    def load_spec(self, spec_json) -> None:
+    def load_spec_from_json(self, spec_json) -> None:
         pass
+
+class 測試:
+    def __init__(self, model_number: str) -> None:
+        self.inputs
+        self.outputs
