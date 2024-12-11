@@ -1,18 +1,18 @@
 {
     "Model": "MJWI10-48D05",
+    "ProductMeta": {
+        "OutputQuantity": 2,
+        "ConverterType": "DC->DC",
+        "OutputRegulation": true,
+        "RemoteOnOffType": "Enable High",
+        "OutputTrim": false,
+        "IoIsolation": "1500 VDC",
+        "InsulationSystemType": "Functional",
+        "MountingType": "Board Mount-Through Hole Device",
+        "PackageType": "Inch",
+        "Applications": "Industrial"
+    },
     "GeneralSpecifications": {
-        "ProductMeta": {
-            "OutputQuantity": 2,
-            "ConverterType": "DC->DC",
-            "OutputRegulationType": true,
-            "RemoteOnOffType": "Enable High",
-            "OutputTrim": false,
-            "IoIsolation": "1500 VDC",
-            "InsulationSystemType": "Functional",
-            "MountingType": "Board Mount-Through Hole Device",
-            "PackageType": "Inch",
-            "Applications": "Industrial"
-        },
         "Component": {
             "RequiredQuerySchema":[
                     "ComponentType",
@@ -401,7 +401,7 @@
                 }
             ]
         },
-        "OutputVoltageSettingAccuracy": {
+        "OutputVoltageAccuracy": {
             "RequiredQuerySchema": [
                 "OutputNumber",
                 "OutputCurrent"

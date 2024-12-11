@@ -162,6 +162,13 @@ class RangeExtractor:
             - Only one '/' symbol is allowed to define the range.
             - No additional range symbols are allowed.
 
+        5. Range with '-' separator:
+        - Examples:
+            - "-2-+1" -> (-2, 1)
+        - Restrictions:
+            - Number_1 should be smaller than Number_2.
+            - No additional range symbols are allowed.
+
         Handling Prefixes
         -----------------
         - Ranges can be extracted from strings with descriptive text before the range.
@@ -261,15 +268,15 @@ class RangeExtractor:
                 raise ValueError(f"輸入 '{value}' 包含多餘的數字或無效的範圍格式。")
             return lower, upper
 
-        # 檢查 '-' 有序分隔符格式
+        # 檢查 '-' 有序分隔符格式(目前這段是髒code，需要重寫測試判定條件與註解)
         separator_match = RangeExtractor.separator_match_pattern_3.search(value_clean)
         if separator_match:
             num_str1 = separator_match.group(1)
             num_str2 = separator_match.group(2)
             if not RangeExtractor.is_valid_number(num_str1) or not RangeExtractor.is_valid_number(num_str2):
                 raise ValueError(f"輸入 '{value}' 中包含無效的數字。")
-            lower = Decimal(num_str1) if Decimal(num_str1) < Decimal(num_str2) else Decimal(num_str2)
-            upper = Decimal(num_str2) if Decimal(num_str1) < Decimal(num_str2) else Decimal(num_str1)
+            lower = Decimal(num_str1)
+            upper = Decimal(num_str2)
             if lower > upper:
                 raise ValueError(f"下限 {lower} 大於上限 {upper}，這是不允許的。")
             # 檢查剩餘字元中是否還有多餘數字

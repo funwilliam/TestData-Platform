@@ -37,6 +37,8 @@ class TestExtractRange(unittest.TestCase):
             (' 0 ~ +1 ', (Decimal('0'), Decimal('1'))),
             (' -1 ~ 0 ', (Decimal('-1'), Decimal('0'))),
             (' + / - 7 . 7 ', (Decimal('-7.7'), Decimal('7.7'))),
+            (' 1 . 0 0 1 - + 2 . 0 0 1 ', (Decimal('1.001'), Decimal('2.001'))),
+            (' 1 . 0 0 2 - 2 . 0 0 2 ', (Decimal('1.002'), Decimal('2.002'))),
         ]
         for input_str, expected in test_cases:
             result = extract_range(input_str)
@@ -114,9 +116,9 @@ class TestExtractRange(unittest.TestCase):
 
     def test_range_parsing(self):
         """
-        測試 'from X to Y' , 'X to Y' , 'X/Y' 格式的解析。
+        測試 'from X to Y' , 'X to Y' , 'X/Y' , 'X-Y' 格式的解析。
 
-        確保函數能夠正確解析 'to' , '/' 格式。
+        確保函數能夠正確解析 'to' , '/' 格式 , '-'。
         """
         test_cases = [
             ('from -100 to 500', (Decimal('-100'), Decimal('500'))),
@@ -146,6 +148,7 @@ class TestExtractRange(unittest.TestCase):
             ('0to1', (Decimal('0'), Decimal('1'))),
             ('-0.5to0.5', (Decimal('-0.5'), Decimal('0.5'))),
             ('+2.2/-5.5', (Decimal('-5.5'), Decimal('2.2'))),
+            ('-5.5-+2.2', (Decimal('-5.5'), Decimal('2.2'))),
         ]
         for input_str, expected in test_cases:
             result = extract_range(input_str)
@@ -241,49 +244,47 @@ class TestExtractRange(unittest.TestCase):
         確保函數在遇到無效的輸入時，能夠拋出 ValueError，並提供適當的錯誤訊息。
         """
         invalid_cases = [
-            '-5~',
-            '100 ~ -50',
-            '1',
-            '',
-            'abc',
-            '±   ',
-            'from to',
-            '~~',
-            '±abc',
-            'from 100',
-            'to 200',
-            '100~abc',
-            '±',
-            '{',
-            '+-',
-            '+- ',
-            'fromto',
-            '+++',
-            '--',
-            '==',
-            '1~',
-            '~2',
-            'fromto',
-            'from ~ to',
-            '±±1',
-            '{{1',
-            '++1--2',
-            'number',
-            '±-',
-            'from-',
-            'to+',
-            '1e2~abc',
-            'abc~1e2',
-            '1e~2e',
-            '1.2.3~4.5.6',
-            '1e2e3~4e5',
-            '±~1',
-            '~±1',
-            'from~to',
-            '-40 - +71',   # 測試使用 '-' 作為範圍分隔符的情況，應視為無效輸入
-            '100 - 200',   # 同上
-            '1 – 2',       # 使用 '–'（長破折號）作為分隔符
-            '3 — 4',       # 使用 '—'（長破折號）作為分隔符
+            '-5~',          # 字串不符合設計格式
+            '1',            # 字串不符合設計格式
+            '',             # 字串不符合設計格式
+            'abc',          # 字串不符合設計格式
+            '±   ',         # 字串不符合設計格式
+            'from to',      # 字串不符合設計格式
+            '~~',           # 字串不符合設計格式
+            'from 100',     # 字串不符合設計格式
+            'to 200',       # 字串不符合設計格式
+            '±',            # 字串不符合設計格式
+            '{',            # 字串不符合設計格式
+            '+-',           # 字串不符合設計格式
+            '+- ',          # 字串不符合設計格式
+            'fromto',       # 字串不符合設計格式
+            '+++',          # 字串不符合設計格式
+            '--',           # 字串不符合設計格式
+            '==',           # 字串不符合設計格式
+            '1~',           # 字串不符合設計格式
+            '~2',           # 字串不符合設計格式
+            'fromto',       # 字串不符合設計格式
+            'from ~ to',    # 字串不符合設計格式
+            '±±1',          # 字串不符合設計格式
+            '{{1',          # 字串不符合設計格式
+            'number',       # 字串不符合設計格式
+            '±-',           # 字串不符合設計格式
+            'from-',        # 字串不符合設計格式
+            'to+',          # 字串不符合設計格式
+            '±~1',          # 字串不符合設計格式
+            '~±1',          # 字串不符合設計格式
+            'from~to',      # 字串不符合設計格式
+            '1e~2e',        # 非法數字
+            '1.2.3~4.5.6',  # 非法數字
+            '1e2e3~4e5',    # 非法數字
+            '±abc',         # 非法數字
+            '100~abc',      # 非法數字
+            'abc~1e2',      # 非法數字
+            '1e2~abc',      # 非法數字
+            '100 ~ -50',    # X > Y
+            '+2.2--5.5'     # X > Y
+            '1.003–2.003',  # 使用 '–'（長破折號）
+            '1.004—2.004',  # 使用 '—'（長破折號）
         ]
         for input_str in invalid_cases:
             with self.subTest(input_str=input_str):

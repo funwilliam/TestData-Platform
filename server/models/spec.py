@@ -1,21 +1,64 @@
-from mongoengine import BooleanField, connect, Document, DynamicEmbeddedDocument, DynamicField, EmbeddedDocument, EmbeddedDocumentField, DecimalField, IntField, StringField, ListField, ValidationError
+from mongoengine import BooleanField, connect, DictField, Document, DynamicEmbeddedDocument, DynamicField, DecimalField, EmbeddedDocument, EmbeddedDocumentField, GenericEmbeddedDocumentField, IntField, MapField, StringField, ListField, ValidationError
 
 
-# Define the ExactValue embedded document to store precise values with units.
+class FormulaVariable(EmbeddedDocument):
+    """
+    嵌入文檔，用於存儲單個變量的信息。
+
+    Attributes:
+        Type (str): 含路徑的變量類型（例如 "InputVoltage"）。
+        Condition (dict): 變量的條件描述，例如 {"Value": "NominalLine"}。
+        GetValue (str): 指定如何獲取變量的值，取值為 'ExactValue', 'Upper', 'Lower'。
+    """
+    Type = StringField(required=True)
+    Condition = DictField()
+    GetValue = StringField(choices=['ExactValue', 'Upper', 'Lower'], required=True)
+
+class LocalFormula(EmbeddedDocument):
+    """
+    嵌入文檔，用於存儲本地定義的公式信息。
+
+    Attributes:
+        Expression (str): 公式表達式。
+        Variables (dict): 公式中涉及的變量映射，鍵是變量名，值是 FormulaVariable 物件。
+        Description (str, optional): 對公式的描述或註釋。
+    """
+    Expression = StringField(required=True)
+    Variables = DictField(field=EmbeddedDocumentField(FormulaVariable))
+    Description = StringField()
+
+class ReferenceFormula(EmbeddedDocument):
+    """
+    嵌入文檔，用於描述引用全局公式的具體信息。
+
+    Attributes:
+        FormulaID (str): 引用的公式的唯一標識符（在 ProductModel 中的公式）。
+        ParameterMappings (dict): 將產品數據中的屬性映射到公式中的變量。
+    """
+    FormulaID = StringField(required=True)
+    ParameterMappings = DictField(field=StringField())
+
 class ExactValue(EmbeddedDocument):
     """
     嵌入文檔，用於存儲具有單位的精確值。
 
     Attributes:
-        Value (Decimal): 精確數值。
+        Value (Decimal, optional): 精確數值。
+        Formula (ReferenceFormula or LocalFormula, optional): 用於計算的公式引用或本地定義的公式。
         Unit (str): 數值的單位。
-        SignalType (str, optional): 信號類型（例如 AC/DC）。
+        SignalType (str, optional): 信號類型（例如 AC/DC/P-P）。
     """
-    Value = DecimalField(required=True)
+    Value = DecimalField(precision=4)
+    Formula = GenericEmbeddedDocumentField(choices=[ReferenceFormula, LocalFormula])
     Unit = StringField(required=True)
     SignalType = StringField()
 
-# Define the Range embedded document to store a range of values.
+    def clean(self):
+        if self.Value is not None and self.Formula is not None:
+            raise ValidationError("Only one of 'Value' or 'Formula' should be defined.")
+        if self.Value is None and self.Formula is None:
+            raise ValidationError("One of 'Value' or 'Formula' must be defined.")
+
 class Range(EmbeddedDocument):
     """
     嵌入文檔，用於存儲數值範圍，包括上下限。
@@ -27,7 +70,6 @@ class Range(EmbeddedDocument):
     Lower = EmbeddedDocumentField(ExactValue, null=True)
     Upper = EmbeddedDocumentField(ExactValue, null=True)
 
-# Define the Instance embedded document to handle instances with exact values or ranges.
 class Instance(DynamicEmbeddedDocument):
     """
     動態嵌入文檔，用於處理具有精確值或範圍的實例。
@@ -39,62 +81,28 @@ class Instance(DynamicEmbeddedDocument):
     ExactValue = EmbeddedDocumentField(ExactValue)
     Range = EmbeddedDocumentField(Range)
 
-# Define the ProductTypeInstance embedded document to store product type-related information.
-class ProductMetaInstance(EmbeddedDocument):
-    """
-    嵌入文檔，用於存儲產品元數據、分類信息。
-
-    Attributes:
-        OutputQuantity (int): 輸出數量。
-        ConverterType (str): 轉換類型。
-        OutputRegulation (bool): 擁有輸出穩壓功能。
-        RemoteOnOffType (str): 遠端控制類型。
-        OutputTrim (bool): 擁有輸出微調功能。
-        IoIsolation (str): Iinput/Output隔離電壓等級。
-        InsulationSystemType (str): 絕緣系統類型。
-        MountingType (str): 安裝類型。
-        PackageType (str): 封裝類型。
-        Applications (str): 主要應用領域。
-    """
-    OutputQuantity = IntField()
-    ConverterType = StringField()
-    OutputRegulation = BooleanField()
-    RemoteOnOffType = StringField()
-    OutputTrim = BooleanField()
-    IoIsolation = StringField()
-    InsulationSystemType = StringField()
-    MountingType = StringField()
-    PackageType = StringField()
-    Applications = StringField()
-
-# Define the ComponentInstance embedded document to store information about components.
 class ComponentInstance(EmbeddedDocument):
     """
     嵌入文檔，用於存儲元件相關的信息。
 
     Attributes:
-        ComponentType (str): 元件類型。
         Number (str): 元件編號。
         Statement (str, optional): 元件聲明或描述。
     """
-    ComponentType = StringField(required=True)
     Number = StringField(required=True)
     Statement = StringField()
 
-# Define the IOInstance embedded document to store information about input/output configurations.
 class IOInstance(EmbeddedDocument):
     """
     嵌入文檔，用於存儲輸入/輸出配置相關的信息。
 
     Attributes:
-        IOType (str): 輸入或輸出類型。
         Number (str): 輸入或輸出的編號。
         PinPair (list of str): 輸入或輸出的引腳對。
 
     Methods:
         clean(): 驗證 PinPair 的元素數量是否正確。
     """
-    IOType = StringField(required=True)
     Number = StringField(required=True)
     PinPair = ListField(StringField())
 
@@ -105,49 +113,110 @@ class IOInstance(EmbeddedDocument):
         Raises:
             ValidationError: 如果 PinPair 的元素數量不是 2，則拋出異常。
         """
-        if len(self.PinPair) != 2:
+        if self.PinPair and len(self.PinPair) != 2:
             raise ValidationError("PinPair must contain exactly 2 elements.")
 
-# Define the GeneralSpecifications embedded document to store general product specifications.
-class GeneralSpecifications(EmbeddedDocument):
+class LoadInstance(EmbeddedDocument):
     """
-    嵌入文檔，用於存儲產品的一般規格。
+    嵌入文檔，用於存儲測試用負載相關的信息。
 
     Attributes:
-        ProductMeta (ProductMetaInstance): 產品元信息。
-        Component (list of ComponentInstance): 元件的實例列表。
-        IO (list of IOInstance): 輸入/輸出的實例列表。
-        OperatingAmbientTemperature (list of Instance): 操作環境溫度的實例列表。
+        AbstractPair (list of str): 引腳對(抽象)，例如: [+vout, -vout]。
+        ExactValue (ExactValue): 負載物的值。
+
+    Methods:
+        clean(): 驗證 AbstractPair 的元素數量是否正確。
+    """
+    AbstractPair = ListField(StringField(), null=True)
+    ExactValue = EmbeddedDocumentField(ExactValue, null=True)
+
+    def clean(self):
+        """
+        驗證 AbstractPair 列表中的元素數量是否為 2。
+
+        Raises:
+            ValidationError: 如果 AbstractPair 的元素數量不是 2，則拋出異常。
+        """
+        if self.AbstractPair and len(self.AbstractPair) != 2:
+            raise ValidationError("AbstractPair must contain exactly 2 elements.")
+
+class Category(EmbeddedDocument):
+    """
+    嵌入文檔，用於存儲產品元數據、分類信息。
+
+    Attributes:
+        SeriesNumber (str): 產品系列。
+        OutputQuantity (int): 輸出數量。
+        ConverterType (str): 轉換類型。
+        OutputRegulation (bool): 是否擁有輸出穩壓功能。
+        RemoteControlType (str): 遠端控制類型。
+        OutputTrim (bool): 是否擁有輸出微調功能。
+        IoIsolation (str): Iinput/Output隔離電壓等級。
+        InsulationSystemType (str): 絕緣系統類型。
+        MountingType (str): 安裝類型。
+        PackageType (str): 封裝類型。
+        Applications (str): 主要應用領域。
+    """
+    SeriesNumber = StringField()
+    OutputQuantity = IntField()
+    ConverterType = StringField()
+    OutputRegulation = BooleanField()
+    RemoteControlType = StringField()
+    OutputTrim = BooleanField()
+    IoIsolation = StringField()
+    InsulationSystemType = StringField()
+    MountingType = StringField()
+    PackageType = StringField()
+    Applications = StringField()
+
+class InspectionParameters(EmbeddedDocument):
+    """
+    嵌入文檔，用於存儲測試時可能使用到的參數清單。
+
+    Attributes:
+        Component (Dict[str, List[ComponentInstance]]): 元件的分類與實例列表。
+        IO (Dict[str, List[IOInstance]]): 輸入的實例列表。
+        AmbientTemperature (list of Instance): 操作環境溫度的實例列表。
         InputVoltage (list of Instance): 輸入電壓的實例列表。
         OutputVoltage (list of Instance): 輸出電壓的實例列表。
         OutputCurrent (list of Instance): 輸出電流的實例列表。
+        OutputPower (list of Instance): 輸出功率的實例列表。
+        ResistiveLoad (list of LoadInstance): 電阻負載的實例列表。
+        CapacitiveLoad (list of LoadInstance): 電容負載的實例列表。
+        StartUpThresholdVoltage (list of Instance): 啟動臨界電壓的實例列表。
+        UndervoltageShutdownVoltage (list of Instance): 欠壓關斷電壓的實例列表。
         IsolationVoltage (list of Instance): 絕緣電壓的實例列表。
         IsolationResistance (list of Instance): 絕緣電阻的實例列表。
         IsolationCapacitance (list of Instance): 絕緣電容的實例列表。
         OutputVoltageTrimResistance (list of Instance): 輸出電壓調整電阻的實例列表。
+        SwitchingFrequency (list of Instance): 交換頻率的實例列表。
     """
-    ProductMeta = EmbeddedDocumentField(ProductMetaInstance)
-    Component = ListField(EmbeddedDocumentField(ComponentInstance))
-    IO = ListField(EmbeddedDocumentField(IOInstance))
-    OperatingAmbientTemperature = ListField(EmbeddedDocumentField(Instance))
+    Component = MapField(field=ListField(EmbeddedDocumentField(ComponentInstance)))
+    IO = MapField(field=ListField(EmbeddedDocumentField(IOInstance)))
+    AmbientTemperature = ListField(EmbeddedDocumentField(Instance))
     InputVoltage = ListField(EmbeddedDocumentField(Instance))
     OutputVoltage = ListField(EmbeddedDocumentField(Instance))
     OutputCurrent = ListField(EmbeddedDocumentField(Instance))
+    OutputPower = ListField(EmbeddedDocumentField(Instance))
+    ResistiveLoad = ListField(EmbeddedDocumentField(LoadInstance))
+    CapacitiveLoad = ListField(EmbeddedDocumentField(LoadInstance))
+    StartupThresholdVoltage = ListField(EmbeddedDocumentField(Instance))
+    UndervoltageShutdownVoltage = ListField(EmbeddedDocumentField(Instance))
     IsolationVoltage = ListField(EmbeddedDocumentField(Instance))
     IsolationResistance = ListField(EmbeddedDocumentField(Instance))
     IsolationCapacitance = ListField(EmbeddedDocumentField(Instance))
     OutputVoltageTrimResistance = ListField(EmbeddedDocumentField(Instance))
+    SwitchingFrequency = ListField(EmbeddedDocumentField(Instance))
 
-# Define the QualityTestSpecifications embedded document to store quality test specifications.
-class QualityTestSpecifications(EmbeddedDocument):
+class InspectionAttributes(EmbeddedDocument):
     """
-    嵌入文檔，用於存儲產品的質量測試規格。
+    嵌入文檔，用於存儲產品的品質檢查合格規範。
 
     Attributes:
         InputCurrent (list of Instance): 輸入電流的實例列表。
-        InputReflectedRippleCurrent (list of Instance): 反射紋波電流的實例列表。
+        InputReflectedRippleCurrent (list of Instance): 反射漣波電流的實例列表。
         OutputVoltage (list of Instance): 輸出電壓的實例列表。
-        OutputVoltageSettingAccuracy (list of Instance): 輸出電壓設置精度的實例列表。
+        OutputVoltageAccuracy (list of Instance): 輸出電壓精度的實例列表。
         OutputVoltageBalance (list of Instance): 輸出電壓平衡的實例列表。
         LoadRegulation (list of Instance): 負載調整率的實例列表。
         LineRegulation (list of Instance): 線路調整率的實例列表。
@@ -157,6 +226,7 @@ class QualityTestSpecifications(EmbeddedDocument):
         Overshoot (list of Instance): 過沖的實例列表。
         Efficiency (list of Instance): 效率的實例列表。
         ShortCircuitProtectionFrequency (list of Instance): 短路保護操作頻率的實例列表。
+        ShortCircuitProtectionInputPower (list of Instance): 短路保護輸入功率的實例列表。
         ShortCircuitProtectionInputCurrent (list of Instance): 短路保護輸入電流的實例列表。
         OverloadCurrentProtection (list of Instance): 過載保護的實例列表。
         RemoteControlInputVoltage (list of Instance): 遠端控制輸入電壓的實例列表。
@@ -166,7 +236,7 @@ class QualityTestSpecifications(EmbeddedDocument):
     InputCurrent = ListField(EmbeddedDocumentField(Instance))
     InputReflectedRippleCurrent = ListField(EmbeddedDocumentField(Instance))
     OutputVoltage = ListField(EmbeddedDocumentField(Instance))
-    OutputVoltageSettingAccuracy = ListField(EmbeddedDocumentField(Instance))
+    OutputVoltageAccuracy = ListField(EmbeddedDocumentField(Instance))
     OutputVoltageBalance = ListField(EmbeddedDocumentField(Instance))
     LoadRegulation = ListField(EmbeddedDocumentField(Instance))
     LineRegulation = ListField(EmbeddedDocumentField(Instance))
@@ -176,25 +246,51 @@ class QualityTestSpecifications(EmbeddedDocument):
     Overshoot = ListField(EmbeddedDocumentField(Instance))
     Efficiency = ListField(EmbeddedDocumentField(Instance))
     ShortCircuitProtectionFrequency = ListField(EmbeddedDocumentField(Instance))
+    ShortCircuitProtectionInputPower = ListField(EmbeddedDocumentField(Instance))
     ShortCircuitProtectionInputCurrent = ListField(EmbeddedDocumentField(Instance))
     OverloadCurrentProtection = ListField(EmbeddedDocumentField(Instance))
     RemoteControlInputVoltage = ListField(EmbeddedDocumentField(Instance))
     RemoteControlInputCurrent = ListField(EmbeddedDocumentField(Instance))
     OutputVoltageTrimRange = ListField(EmbeddedDocumentField(Instance))
 
-# Define the main ProductModel document to store complete product data.
+class Inspection(EmbeddedDocument):
+    """
+    嵌入文檔，用於儲存品質檢查相關資料。
+
+    Attributes:
+        Parameters (InspectionParameters): 產品的一般規格，例如輸入電壓、輸出電壓等基本電氣參數。
+        Attributes (InspectionAttributes): 產品的品質測試屬性，例如品質測試條件、合格範圍等。
+    """
+    Parameters = EmbeddedDocumentField(InspectionParameters)
+    Attributes = EmbeddedDocumentField(InspectionAttributes)
+
+class AbstractFormula(EmbeddedDocument):
+    """
+    嵌入文檔，用於存儲公式信息。
+
+    Attributes:
+        Expression (str): 公式表達式。
+        Variables (list): 公式中涉及的變量名稱列表。
+        Description (str, optional): 對公式的描述或註釋。
+    """
+    Expression = StringField(required=True)
+    Variables = ListField(field=StringField())
+    Description = StringField()
+
 class ProductModel(Document):
     """
     主文檔模型，用於存儲完整的產品數據，包括一般規格和質量測試規格。
 
     Attributes:
-        Model (str): 產品型號。
-        GeneralSpecifications (GeneralSpecifications): 產品的一般規格。
-        QualityTestSpecifications (QualityTestSpecifications): 產品的質量測試規格。
+        ModelNumber (str): 唯一的產品型號，用於標識每個產品。
+        Category (Category): 分類與性質總攬，包括幾種主要分類、應用領域標籤...等資料。
+        Inspections (Dict[str, Inspection]): 品質檢查。
+        Formulas (Dict[str, AbstractFormula]): 全域公式定義，其中每個鍵是公式名稱，對應的值是該公式的詳細內容。
     """
-    Model = StringField(required=True, unique=True)
-    GeneralSpecifications = EmbeddedDocumentField(GeneralSpecifications)
-    QualityTestSpecifications = EmbeddedDocumentField(QualityTestSpecifications)
+    ModelNumber = StringField(required=True, unique=True)
+    Category = EmbeddedDocumentField(Category)
+    Inspections = MapField(field=EmbeddedDocumentField(Inspection))
+    Formulas = MapField(field=EmbeddedDocumentField(AbstractFormula))
     meta = {
         'collection': 'ProductModel'
     }

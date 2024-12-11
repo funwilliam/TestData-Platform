@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from mongoengine import connect
-from server.models.spec import ProductModel, GeneralSpecifications, QualityTestSpecifications, ProductTypeInstance, ComponentInstance, IOInstance, Instance
+from server.models.spec import ProductModel, GeneralSpecifications, QualityTestSpecifications, ProductMetaInstance, ComponentInstance, IOInstance, Instance
 
 # Connect to MongoDB using the provided connection string.
 connect(host='mongodb://localhost:27017/testdataplatform-db')
@@ -25,7 +25,7 @@ def insert_data_from_json(file_path):
 
     # Parse and create GeneralSpecifications from the JSON data
     general_specifications = GeneralSpecifications(
-        ProductType=ProductTypeInstance(**data["GeneralSpecifications"]["ProductType"]),
+        ProductType=ProductMetaInstance(**data["GeneralSpecifications"]["ProductType"]),
         OutputQuantity=data["GeneralSpecifications"]["OutputQuantity"],
         Component=[ComponentInstance(**component) for component in data["GeneralSpecifications"]["Component"]["Instances"]],
         IO=[IOInstance(**io_data) for io_data in data["GeneralSpecifications"]["IO"]["Instances"]],
@@ -43,7 +43,7 @@ def insert_data_from_json(file_path):
         InputCurrent=[Instance(**ic) for ic in data["QualityTestSpecifications"]["InputCurrent"]["Instances"]],
         InputReflectedRippleCurrent=[Instance(**irr) for irr in data["QualityTestSpecifications"]["InputReflectedRippleCurrent"]["Instances"]],
         OutputVoltage=[Instance(**ov) for ov in data["QualityTestSpecifications"]["OutputVoltage"]["Instances"]],
-        OutputVoltageSettingAccuracy=[Instance(**ovsa) for ovsa in data["QualityTestSpecifications"]["OutputVoltageSettingAccuracy"]["Instances"]],
+        OutputVoltageAccuracy=[Instance(**ovsa) for ovsa in data["QualityTestSpecifications"]["OutputVoltageAccuracy"]["Instances"]],
         OutputVoltageBalance=[Instance(**ovb) for ovb in data["QualityTestSpecifications"]["OutputVoltageBalance"]["Instances"]],
         LoadRegulation=[Instance(**lr) for lr in data["QualityTestSpecifications"]["LoadRegulation"]["Instances"]],
         LineRegulation=[Instance(**linr) for linr in data["QualityTestSpecifications"]["LineRegulation"]["Instances"]],
