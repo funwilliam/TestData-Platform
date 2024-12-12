@@ -4,7 +4,7 @@ import psycopg2
 def get_product_data():
     url = "http://192.168.1.109/minmax-api-server/products/list"
     headers = {
-        "X-API-Key": "3241ea32-6f4d-4985-9ead-1d3c63b355e8"
+        "X-API-Key": "58a702a6-335999a3-a987b4e5-8647f1b6"
     }
     try:
         response = requests.get(url, headers=headers)

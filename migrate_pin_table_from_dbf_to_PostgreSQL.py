@@ -22,20 +22,20 @@ def extract_diameter_str(input_string):
         return None, None
 
 # 解析 .dbf 文件
-file_path = '接腳說明.dbf'
+file_path = r'\\192.168.1.61\電氣測試規格資料庫\產品規格資料庫-113.11.06\接腳說明.dbf'
 table = DBF(file_path, encoding='cp950')
 
 # 構建修改後的記錄列表
 modified_records = []
 for record in table:
-    if record.get('外觀尺力磅') and record.get('接腳磅號'):
+    if record.get('外觀尺寸編') and record.get('接腳編號'):
         diameter_str = record.get('DIAMETER__')
         diameter_mm, _ = extract_diameter_str(diameter_str)
 
-        pin_number_str = record.get('接腳磅號')
+        pin_number_str = record.get('接腳編號')
         for pin_number in extract_pin_number_str(pin_number_str):
             modified_record = {
-                '外觀尺寸編號': record.get('外觀尺力磅'),
+                '外觀尺寸編號': record.get('外觀尺寸編'),
                 '接腳編號': pin_number,
                 '接腳功能': record.get('接腳功能'),
                 '直徑(mm)': Decimal(diameter_mm) if diameter_mm else None
