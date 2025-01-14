@@ -1,0 +1,178 @@
+{
+    "滿載輸入電流(mA)(FL)": InputCurrent
+    "滿載輸入電流(mA)(FN)": InputCurrent
+    "滿載輸入電流(mA)(FH)": InputCurrent
+    "空載輸入電流(mA)(NL)": InputCurrent
+    "空載輸入電流(mA)(NN)": InputCurrent
+    "空載輸入電流(mA)(NH)": InputCurrent
+    "輸出電壓(FL)(+)": OutputVoltage
+    "輸出電壓(FL)(-)": OutputVoltage
+    "輸出電壓(FN)(+)": OutputVoltage
+    "輸出電壓(FN)(-)": OutputVoltage
+    "輸出電壓(FH)(+)": OutputVoltage
+    "輸出電壓(FH)(-)": OutputVoltage
+    "輸出電壓(LL)(+)": OutputVoltage
+    "輸出電壓(LL)(-)": OutputVoltage
+    "輸出電壓(LN)(+)": OutputVoltage
+    "輸出電壓(LN)(-)": OutputVoltage
+    "輸出電壓(LH)(+)": OutputVoltage
+    "輸出電壓(LH)(-)": OutputVoltage
+    "輸出電壓(NL)(+)": OutputVoltage
+    "輸出電壓(NL)(-)": OutputVoltage
+    "輸出電壓(NN)(+)": OutputVoltage
+    "輸出電壓(NN)(-)": OutputVoltage
+    "輸出電壓(NH)(+)": OutputVoltage
+    "輸出電壓(NH)(-)": OutputVoltage
+    "絕緣電容(pF)": IsolationCapacitance
+    "漏電流(uA)": LeakageCurrent
+    "漣波雜訊(mV/VP-P)(FL)(+)": RippleAndNoise
+    "漣波雜訊(mV/VP-P)(FL)(-)": RippleAndNoise
+    "漣波雜訊(mV/VP-P)(FN)(+)": RippleAndNoise
+    "漣波雜訊(mV/VP-P)(FN)(-)": RippleAndNoise
+    "漣波雜訊(mV/VP-P)(FH)(+)": RippleAndNoise
+    "漣波雜訊(mV/VP-P)(FH)(-)": RippleAndNoise
+    "漣波雜訊(mV/VP-P)(LN)(+)": RippleAndNoise
+    "漣波雜訊(mV/VP-P)(LN)(-)": RippleAndNoise
+    "震盪頻率(KHz)FL": SwitchingFrequency
+    "震盪頻率(KHz)FN": SwitchingFrequency
+    "震盪頻率(KHz)FH": SwitchingFrequency
+    "短路電流(mA)FL": ShortCircuitProtectionInputCurrent
+    "短路電流(mA)FN": ShortCircuitProtectionInputCurrent
+    "短路電流(mA)FH": ShortCircuitProtectionInputCurrent
+    "反射輸入漣波(mA/P-P)FL": ReflectedInputRippleCurrent
+    "反射輸入漣波(mA/P-P)FN": ReflectedInputRippleCurrent
+    "反射輸入漣波(mA/P-P)FH": ReflectedInputRippleCurrent
+    "FL暫態(uS)(+)": TransientRecoveryTime
+    "FL暫態(uS)(-)": TransientRecoveryTime
+    "FL暫態(%)(+)": TransientResponseDeviation
+    "FL暫態(%)(-)": TransientResponseDeviation
+    "FN暫態(uS)(+)": TransientRecoveryTime
+    "FN暫態(uS)(-)": TransientRecoveryTime
+    "FN暫態(%)(+)": TransientResponseDeviation
+    "FN暫態(%)(-)": TransientResponseDeviation
+    "FH暫態(uS)(+)": TransientRecoveryTime
+    "FH暫態(uS)(-)": TransientRecoveryTime
+    "FH暫態(%)(+)": TransientResponseDeviation
+    "FH暫態(%)(-)": TransientResponseDeviation
+    "效率(%)FL": Efficiency
+    "效率(%)FN": Efficiency
+    "效率(%)FH": Efficiency
+    "線調整率(%)(FN)(+)": LineRegulation
+    "線調整率(%)(FN)(-)": LineRegulation
+    "負載調整率(%)(FN)(+)": LoadRegulation
+    "負載調整率(%)(FN)(-)": LoadRegulation
+    "電壓平衡率(%)(FN)": OutputVoltageBalance
+    "電壓準確率(%)(FN)(+)": OutputVoltageBalance
+    "電壓準確率(%)(FN)(-)": OutputVoltageBalance
+    "過電流保護(%)(FL)": OverloadCurrentProtection
+    "過電流保護(%)(FN)": OverloadCurrentProtection
+    "過電流保護(%)(FH)": OverloadCurrentProtection
+    "Remote ON": 
+    "Remote OFF": 
+    "Trim(Up)": OutputVoltageTrimRange
+    "Trim(Dn)": OutputVoltageTrimRange
+    "I.R.": 
+    "HI-POT": 
+    "FL開機測試(R+C)": 
+    "FL開機測試(R)": 
+    "FL開機測試(E)": 
+    "FL開機測試(E+C)": 
+    "FN開機測試(R+C)": 
+    "FN開機測試(R)": 
+    "FN開機測試(E)": 
+    "FN開機測試(E+C)": 
+    "FH開機測試(R+C)": 
+    "FH開機測試(R)": 
+    "FH開機測試(E)": 
+    "FH開機測試(E+C)": 
+    "LL開機測試(R+C)": 
+    "LL開機測試(R)": 
+    "LL開機測試(E)": 
+    "LL開機測試(E+C)": 
+    "LN開機測試(R+C)": 
+    "LN開機測試(R)": 
+    "LN開機測試(E)": 
+    "LN開機測試(E+C)": 
+    "LH開機測試(R+C)": 
+    "LH開機測試(R)": 
+    "LH開機測試(E)": 
+    "LH開機測試(E+C)": 
+    "輕載失控(LL)": 
+    "輕載失控(LN)": 
+    "輕載失控(LH)": 
+    "輕載加到滿載(L)": 
+    "輕載加到滿載(N)": 
+    "輕載加到滿載(H)": 
+    "電阻切換負載(L)": 
+    "電阻切換負載(N)": 
+    "電阻切換負載(H)": 
+    "R+C切換負載(L)": 
+    "R+C切換負載(N)": 
+    "R+C切換負載(H)": 
+    "E+C切換負載(L)": 
+    "E+C切換負載(N)": 
+    "E+C切換負載(H)": 
+    "電子開機測試": 
+    "電子關機測試": 
+    "R4'V監控電壓": 
+    "P3'V38**之P3電壓": 
+    "P7'V38**之P7電壓": 
+    "VDS責任週期(FL)": 
+    "VDS責任週期(FN)": 
+    "VDS責任週期(FH)": 
+    "VGS(FL)": 
+    "VGS(FH)": 
+    "VDS(FN)": 
+    "VDS(FH)": 
+    "最小開機電壓(V)": StartupThresholdVoltage
+    "最大關機電壓(V)": UndervoltageShutdownVoltage
+    "遠端控制最大待機電壓/電流值(N)(V)": RemoteControlInputVoltage
+    "遠端控制最大待機電壓/電流值(N)(mA)": RemoteControlInputCurrent
+    "OverShoot(%)(+V)(L)": Overshoot
+    "OverShoot(%)(-V)(L)": Overshoot
+    "OverShoot(%)(+V)(N)": Overshoot
+    "OverShoot(%)(-V)(N)": Overshoot
+    "OverShoot(%)(+V)(H)": Overshoot
+    "OverShoot(%)(-V)(H)": Overshoot
+    "ULVO(N)": 
+    "遠端控制最小工作電壓/電流值(N)(V)": RemoteControlInputVoltage
+    "遠端控制最小工作電壓/電流值(N)(mA)": RemoteControlInputCurrent
+    "短路操作頻率最大值(L)(hz)": ShortCircuitProtectionFrequency
+    "短路操作頻率最大值(N)(hz)": ShortCircuitProtectionFrequency
+    "短路操作頻率最大值(H)(hz)": ShortCircuitProtectionFrequency
+    "待機最大電流(RMT=0)(N)(mA)": InputCurrent
+    "Image:RippleFreq(FL)": 
+    "Image:RippleFreq(FN)": 
+    "Image:RippleFreq(FH)": 
+    "Image:RippleFreq(LN)": 
+    "Image:IiRef(FL)": 
+    "Image:IiRef(FN)": 
+    "Image:IiRef(FH)": 
+    "Image:VoDYNA(FL)": 
+    "Image:VoDYNA(FN)": 
+    "Image:VoDYNA(FH)": 
+    "Image:VGS(FL)": 
+    "Image:VGS(FH)": 
+    "Image:VDS(FN)": 
+    "Image:VDS(FH)": 
+    "Image:DutyCycle(FL)": 
+    "Image:DutyCycle(FN)": 
+    "Image:DutyCycle(FH)": 
+    "Image:OverShoot(FL)": 
+    "Image:OverShoot(FN)": 
+    "Image:OverShoot(FH)": 
+    "Image:VoShortFreqMax(L)": 
+    "Image:VoShortFreqMax(N)": 
+    "Image:VoShortFreqMax(H)": 
+    "Image:OverShoot(ViL)": 
+    "Image:OverShoot(ViN)": 
+    "Image:OverShoot(ViH)": 
+    "Image:Rmt_On/Off(L)": 
+    "Image:Rmt_On/Off(N)": 
+    "Image:Rmt_On/Off(H)": 
+    "Image:Freq(FL)": 
+    "Image:Freq(FN)": 
+    "Image:Freq(FH)": 
+    "溫度(攝氏)": AmbientTemperature
+    "測試時間": 
+}

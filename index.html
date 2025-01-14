@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Data Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-PI8n5gCcz9cQqQXm3PEtDuPG8qx9oFsFctPg0S5zb8g=" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-daterangepicker@3.1.0/daterangepicker.css" rel="stylesheet" integrity="sha256-lP22bsj+dImBpPIJD99KKgo9vlrOLmXEzkbpXWkr2sc=" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            background-color: #ffffff;
+            border-right: 1px solid #dee2e6;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        .sidebar h4 {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .sidebar .section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #555;
+            margin: 15px 15px 5px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 3px;
+        }
+        .sidebar .nav-item {
+            padding: 5px 15px;
+            display: flex;
+            align-items: center;
+            color: #333;
+            font-size: 0.9rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .sidebar .nav-item:hover {
+            background-color: #e9ecef;
+        }
+        .sidebar .nav-item.active {
+            background-color: rgb(0, 131, 183);
+            color: white;
+        }
+        .sidebar .footer {
+            margin-top: auto;
+            padding: 15px;
+            font-size: 0.8rem;
+            color: #333;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+        }
+        /* Main Content */
+        .main-content {
+            padding: 0px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* 占满视口高度 */
+        }
+        .top-bar {
+            background-color: rgb(0, 131, 183);
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        /* Content */
+        .content {
+            overflow-y: auto; /* 启用滚动 */
+            flex-grow: 1;     /* 占据剩余空间 */
+        }
+        .filter-container {
+            border: 1px solid #33333380;
+            border-radius: 8px;
+            margin: 20px;
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1px 1fr; /* 左、中、右三部分 */
+            gap: 20px;
+            align-items: flex-start;
+            max-width: 900px;
+        }
+        .left, .right {
+            margin: 10px;
+            margin-right: 20px;
+            display: grid;
+            grid-template-rows: auto auto; /* 每一個欄位獨占一行 */
+        }
+        .form-label {
+            white-space: nowrap; /* 避免欄位名稱換行 */
+            font-size: 1rem;
+            font-weight: bold;
+            margin-right: 2rem;
+        }
+        .form-control {
+            flex: 1; /* 保持靈活寬度 */
+        }
+        .divider {
+            border-left: 1px solid #66666660;
+            height: 100%;
+        }
+        .table-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            position: relative;      /* 相对定位以支持子元素 */
+            max-height: 52vh;       /* 限制表格最大高度，支持滚动 */
+            border: 1px solid #ddd;  /* 边框样式 */
+        }
+        .table thead th {
+            position: sticky;        /* 粘性定位 */
+            top: 0;                  /* 固定在容器顶部 */
+            z-index: 2;              /* 确保表头层级高于表格内容 */
+            background-color: #f8f9fa; /* 表头背景色 */
+            border-bottom: 2px solid #ddd; /* 表头与内容分隔线 */
+            text-align: center;      /* 居中对齐 */
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-indicator.green {
+            background-color: green;
+        }
+        .status-indicator.red {
+            background-color: red;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .top-bar {
+                font-size: 1.2rem;
+            }
+        }
+        /* Footer */
+        #footer {
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar d-flex flex-column">
+                <h4>MINMAX</h4>
+
+                <div class="section-title">數據輸入與匯出</div>
+                <a href="#" class="nav-item">手動輸入</a>
+                <a href="#" class="nav-item">檔案匯入</a>
+
+                <div class="section-title">數據庫管理</div>
+                <a href="#" class="nav-item">標準條件設置</a>
+                <a href="#" class="nav-item">數據查詢</a>
+                <a href="#" class="nav-item">歷史比對</a>
+                <a href="#" class="nav-item">異常值追蹤</a>
+
+                <div class="section-title">圖表分析</div>
+                <a href="#" class="nav-item">各別標準圖表</a>
+                <a href="#" class="nav-item">標準圖表生成</a>
+                <a href="#" class="nav-item">統計圖表</a>
+
+                <div class="section-title">電器測試規格</div>
+                <a href="#" class="nav-item">人工輸入</a>
+                <a href="#" class="nav-item">規格表輸出</a>
+
+                <div class="section-title">權限管理</div>
+                <a href="#" class="nav-item">新增人員</a>
+                <a href="#" class="nav-item">權限修改</a>
+
+                <div class="section-title">API 串接說明</div>
+                <a href="#" class="nav-item">API 說明</a>
+
+                <div class="footer">
+                    李xx 登入時間<br>
+                    <a href="#">登出</a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 main-content  d-flex flex-column">
+                <!-- Header -->
+                <header class="top-bar">測試數據整合平台</header>
+
+                <!-- Content -->
+                <div class="content flex-grow-1 px-5">
+                    <!-- 標題: 數據查詢 -->
+                    <h2 class="p-2 fw-bold">數據查詢</h2>
+
+                    <!-- Filter Form -->
+                    <div class="filter-container">
+                        <!-- 左側部分 -->
+                        <div class="left">
+                            <!-- 產品型號 -->
+                            <div class="d-flex align-items-center mb-3">
+                                <label for="Input-modelName" class="form-label ">產品型號</label>
+                                <input type="text" id="Input-modelName" class="form-control" placeholder="請輸入產品型號" autocomplete="off" list="List-modelName">
+                                <datalist id="List-modelName"></datalist>
+                            </div>
+                            <!-- 測試工單 -->
+                            <div class="d-flex align-items-center">
+                                <label for="testOrder" class="form-label">工單查詢</label>
+                                <input type="text" id="testOrder" class="form-control" placeholder="請輸入工單號碼">
+                            </div>
+                        </div>
+            
+                        <!-- 垂直分隔線 -->
+                        <div class="divider"></div>
+            
+                        <!-- 右側部分 -->
+                        <div class="right">
+                            <!-- 測試日期 -->
+                            <div class="d-flex align-items-center  mb-3">
+                                <label for="Input-testDateRange" class="form-label">測試日期</label>
+                                <input type="text" id="Input-testDateRange" name="date-range" class="form-control" placeholder="年/月/日 - 年/月/日">
+                            </div>
+                            <!-- 查詢按鈕 -->
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-secondary">開始查詢</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ms-1 mt-4 mb-4">已查詢到2筆</div>
+
+                    <!-- Data Table -->
+                    <div class="table-container">
+                        <table class="table table-bordered table-hover m-0">
+                            <thead>
+                                <tr>
+                                    <th>數據狀態</th>
+                                    <th>型號</th>
+                                    <th>工單</th>
+                                    <th>階段</th>
+                                    <th>溫度</th>
+                                    <th>測試日期與時間</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="status-indicator green"></span> 正常</td>
+                                    <td>MJW10-48D12</td>
+                                    <td>E12012095</td>
+                                    <td>成品</td>
+                                    <td>常溫</td>
+                                    <td>2024/10/15 09:50</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-indicator red"></span> 異常</td>
+                                    <td>MSLU304</td>
+                                    <td>E12013056</td>
+                                    <td>成品</td>
+                                    <td>低溫</td>
+                                    <td>2024/10/15 11:40</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">查看數據</button>
+                                        <button class="btn btn-danger btn-sm">輸出圖表</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <footer id="footer" class="bg-white">
+                    <p class="w-100 m-0 text-center font-monospace fw-bold">COPYRIGHT © 2024 MINMAX TECH - ENGINEER DEPARTMENT - Yu Chan</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" integrity="sha256-rMfkFFWoB2W1/Zx+4bgHim0WC7vKRVrq6FTeZclH1Z4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js" integrity="sha256-xoh0y6ov0WULfXcLMoaA6nZfszdgI8w2CEJ/3k8NBIE=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/danfojs@1.1.2/lib/bundle.js" integrity="sha256-b4/iTif0LxfGrbF3LLsHwg852tbYcHbLpHMJnY3PsTo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/min/moment.min.js" integrity="sha256-hFxSSWnt1bOvmqbYcY0p/pLo2+JblVIUqOBkoFqaUCc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment-timezone@0.5.45/builds/moment-timezone-with-data.min.js" integrity="sha256-JATtQzySjqI7GE9O3PpjVjwcGkI8Ny7ESx9Puif0NYY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha256-CDOy6cOibCWEdsRiZuaHf8dSGGJRYuBGC+mjoJimHGw=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-daterangepicker@3.1.0/daterangepicker.js" integrity="sha256-iOVs1FytPbiP3HcnhtFMzo0MwYebwD5OVr6Rnf2a0ik=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <script>
+        (() => {
+            const apiKey = '58a702a6-335999a3-a987b4e5-8647f1b6';
+            const apiServerIP = '192.168.1.109';
+            const serverName = 'minmax-api-server';
+
+            async function fetchProductList() {
+                try {
+                    const url = new URL(`http://${apiServerIP}/${serverName}/products/list`);
+                    // 發送GET請求
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-API-Key': apiKey
+                        }
+                    });
+                    if (!response.ok) throw new Error('HTTP error ' + response.status);
+                    const json = await response.json();
+                    if (json.meta.status !== 'success') throw new Error(json.meta.message || 'something wrong');
+                    return new dfd.DataFrame(json.data).sortValues('modelNumber', { ascending: 'true'});
+                } catch (error) {
+                    console.error(error);
+                    return null;
+                }
+            }
+
+            // 為指定的 <select> OR <datalist> 設置選項，首先清除所有現有選項，然後添加一個預設選項和選項清單
+            function setupSelectOptions (selector, list, hasEmptyOption = false) {
+                // 清除 selector 中的所有子節點
+                while (selector.firstChild) selector.removeChild(selector.firstChild);
+
+                // 創建並添加一個預設選項，該選項被禁用且被隱藏
+                const defaultOption = new Option('請選擇一個選項', '', true, true);
+                defaultOption.hidden = !hasEmptyOption;
+                selector.appendChild(defaultOption);
+
+                // 創建一個文檔片段
+                let fragment = document.createDocumentFragment();
+
+                // 遍歷清單元素，創建並添加選項
+                Array.from(new Set(list)).forEach(columnName => fragment.appendChild(new Option(columnName, columnName)));
+
+                // 將文檔片段中的所有選項一次性添加到 selector 中
+                selector.appendChild(fragment);
+            }
+
+            function initializeProductListSearchBar() {
+                Promise.resolve(fetchProductList())
+                    .then(df => {
+                        setupSelectOptions(document.getElementById('List-modelName'), df['modelNumber'].values);
+                    })
+                    .catch(error => console.error('Error during startup:', error));
+            }
+
+            /**
+             * Initializes a date range picker on an input element with specific settings.
+             *
+             * This function configures a date range picker with predefined ranges, localization options,
+             * and other settings such as the date format, min and max date limits.
+             */
+            function initializeDateRangePicker() {
+                const input = document.querySelector('input[name="date-range"]');
+                if (!input) return;
+
+                const dateRangePicker = new daterangepicker(input, {
+                    ranges: {
+                        '今天': [moment(), moment()],
+                        '本周': [moment().startOf('week'), moment().endOf('week')],
+                        '本月': [moment().startOf('month'), moment().endOf('month')],
+                        '近7天': [moment().subtract(6, 'days'), moment()],
+                        '近30天': [moment().subtract(30, 'days'), moment()],
+                    },
+                    locale: {
+                        format: 'YYYY/MM/DD',
+                        separator: ' - ',
+                        applyLabel: '確認',
+                        cancelLabel: '取消',
+                        customRangeLabel: '自訂範圍',
+                        daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                        monthNames: ['1 月', '2 月', '3 月', '4 月', '5 月', '6 月', '7 月', '8 月', '9 月', '10 月', '11 月', '12 月'],
+                        firstDay: 1,
+                        cancelLabel: 'Clear',
+                    },
+                    startDate: moment(),
+                    endDate: moment(),
+                    minDate: '1990/08/07',
+                    maxDate: moment(),
+                    autoUpdateInput: false,
+                });
+
+                $('input[name="date-range"]').on('apply.daterangepicker', function(ev, picker) {
+                    $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+                });
+
+                $('input[name="date-range"]').on('cancel.daterangepicker', function(ev, picker) {
+                    $(this).val('');
+                });
+
+                input.daterangepicker = dateRangePicker;
+            }
+
+            function setupTestDateRangeSearchBar() {
+                const testDateRangeElement = document.getElementById('Input-testDateRange');
+                testDateRangeElement.daterangepicker.setStartDate(moment().subtract(30, 'days'));
+                testDateRangeElement.daterangepicker.setEndDate(moment());
+                testDateRangeElement.value = moment().subtract(30, 'days').format('YYYY/MM/DD') + ' - ' + moment().format('YYYY/MM/DD');
+            }
+
+            function startUp() {
+                initializeProductListSearchBar();
+                initializeDateRangePicker();
+                setupTestDateRangeSearchBar();
+            }
+            window.addEventListener('DOMContentLoaded', startUp, false);
+        })();
+    </script>
+</body>
+</html>

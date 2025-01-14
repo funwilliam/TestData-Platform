@@ -718,43 +718,6 @@ for record in main_record_rows:
                     }
                 )
             )
-        # 絕緣電阻
-        IsolationResistance = []
-        if record.get('輸入對輸2'):
-            unit = None
-            if record.get('輸入對輸出絕緣電阻(MIN)') == 'GΩ' or record.get('輸入對輸出絕緣電阻(MIN)') == 'G[':
-                unit = 'gigaohm'
-            elif record.get('輸入對輸出絕緣電阻(MIN)') == 'MΩ' or record.get('輸入對輸出絕緣電阻(MIN)') == 'M[':
-                unit = 'megaohm'
-            else:
-                unit = None # 缺值，無預設值
-                raise ValueError(f'"{record.get("主型號")}"."絕緣電阻"單位缺值或不合規定。實際值: "{record.get('輸入對輸出絕緣電阻(MIN)')}"，可接受值: "GΩ" or "MΩ"')
-                
-            IsolationResistance = [
-                Instance(
-                    ComponentsGroup1="AllInputPins",
-                    ComponentsGroup2="AllOutputPins",
-                    ExactValue={
-                        "Value": record.get('輸入對輸2'),
-                        "Unit": unit,
-                        "SignalType": None
-                    }
-                )
-            ]
-        # 絕緣電容
-        IsolationCapacitance = []
-        if record.get('輸入對輸4'):
-            IsolationCapacitance = [
-                Instance(
-                    ComponentsGroup1="AllInputPins",
-                    ComponentsGroup2="AllOutputPins",
-                    ExactValue={
-                        "Value": record.get('輸入對輸4'),
-                        "Unit": "picofarad",
-                        "SignalType": None
-                    }
-                )
-            ]
         # 輸出電壓調整電阻值
         OutputVoltageTrimResistance = []
         if record.get('輸出調整電壓電阻值'):
@@ -781,30 +744,6 @@ for record in main_record_rows:
                     }
                 )
             ]
-        # 交換頻率
-        SwitchingFrequency = []
-        if record.get('交換頻率最'):
-            SwitchingFrequency.append(
-                Instance(
-                    ValueLabel=['Minimum'],
-                    ExactValue={
-                        "Value": record.get('交換頻率最'),
-                        "Unit": "hertz",
-                        "SignalType": None
-                    }
-                )
-            )
-        if record.get('交換頻率2'):
-            SwitchingFrequency.append(
-                Instance(
-                    ValueLabel=['Maximum'],
-                    ExactValue={
-                        "Value": record.get('交換頻率2'),
-                        "Unit": "hertz",
-                        "SignalType": None
-                    }
-                )
-            )
 
         # [InspectionAttributes]
         # 輸入電流的實例
@@ -842,7 +781,7 @@ for record in main_record_rows:
             )
             QT_InputCurrent.append(
                 Instance(
-                    RemoteControlMode="working",
+                    RemoteControlMode="Working",
                     InputVoltage="NominalLine",
                     OutputCurrent="MaximumLoad",
                     Range={
@@ -863,7 +802,7 @@ for record in main_record_rows:
             if input_voltage_label and output_current_label:
                 QT_InputCurrent.append(
                     Instance(
-                        RemoteControlMode="working",
+                        RemoteControlMode="Working",
                         InputVoltage=input_voltage_label,
                         OutputCurrent=output_current_label,
                         Range={
@@ -924,7 +863,7 @@ for record in main_record_rows:
                         output_current_map[1000 * Decimal(record.get('負載電流最大值-規格'))] = output_current_value_label
                     QT_InputCurrent.append(
                         Instance(
-                            RemoteControlMode="working",
+                            RemoteControlMode="Working",
                             InputVoltage=input_voltage_label or input_voltage_value_label,
                             OutputCurrent=output_current_label or output_current_value_label,
                             Range={
@@ -943,7 +882,7 @@ for record in main_record_rows:
         if record.get('空載輸入2'):
             QT_InputCurrent.append(
                 Instance(
-                    RemoteControlMode="working",
+                    RemoteControlMode="Working",
                     InputVoltage="NominalLine",
                     OutputCurrent="NoLoad",
                     Range={
@@ -976,7 +915,7 @@ for record in main_record_rows:
 
             QT_InputCurrent.append(
                 Instance(
-                    RemoteControlMode="standby",
+                    RemoteControlMode="Standby",
                     InputVoltage="NominalLine",
                     OutputCurrent="NoLoad",
                     Range={
@@ -990,12 +929,12 @@ for record in main_record_rows:
                 )
             )
         # 反射輸入漣波電流-(@輸入電壓=中間值 AND @輸出電流=滿載)
-        InputReflectedRippleCurrent = []
+        ReflectedInputRippleCurrent = []
         if record.get('反射輸入2'):
-            InputReflectedRippleCurrent = [
+            ReflectedInputRippleCurrent = [
                 Instance(
                     InputVoltage="NominalLine",
-                    OutputCurrent= "MaximumLoad",
+                    OutputCurrent="MaximumLoad",
                     Range= {
                         "Lower": None,
                         "Upper": {
@@ -1115,7 +1054,7 @@ for record in main_record_rows:
                 Lower, Upper = RangeExtractor.extend_to_range(record.get('輸出電壓2'))
                 # print(f"[Warning] {record.get('主型號')}[輸出電壓平衡率]={record.get('輸出電壓2')}，判定為'{Lower}~{Upper}'")
             finally:
-                OutputVoltageBalance.append(
+                OutputVoltageBalance = [
                     Instance(
                         InputVoltage="NominalLine",
                         OutputCurrent="MaximumLoad",
@@ -1132,7 +1071,7 @@ for record in main_record_rows:
                             }
                         }
                     )
-                )
+                ]
         # 負載調整率的實例
         LoadRegulation = []
         # 負載調整率-輸出1-(@輸入電壓=中間值 AND @輸出電流=滿載)
@@ -1257,7 +1196,8 @@ for record in main_record_rows:
                     OutputNumber="1",
                     InputVoltage="NominalLine",
                     OutputCurrent="MaximumLoad",
-                    ValueLabel=["PeakToPeakMaximum"],
+                    AmbientTemperature="RoomTemperature",
+                    ValueLabel=["PeakToPeak"],
                     Range={
                         "Lower": None,
                         "Upper": {
@@ -1275,7 +1215,8 @@ for record in main_record_rows:
                     OutputNumber="2",
                     InputVoltage="NominalLine",
                     OutputCurrent="MaximumLoad",
-                    ValueLabel=["PeakToPeakMaximum"],
+                    AmbientTemperature="RoomTemperature",
+                    ValueLabel=["PeakToPeak"],
                     Range={
                         "Lower": None,
                         "Upper": {
@@ -1293,7 +1234,25 @@ for record in main_record_rows:
                     OutputNumber="1",
                     InputVoltage="NominalLine",
                     OutputCurrent="MaximumLoad",
-                    ValueLabel=["PeakToPeakExtreme"],
+                    AmbientTemperature="MaximumTemperature",
+                    ValueLabel=["PeakToPeak"],
+                    Range={
+                        "Lower": None,
+                        "Upper": {
+                            "Value": record.get('漣波及雜3'),
+                            "Unit": "millivolt",
+                            "SignalType": "P-P"
+                        }
+                    }
+                )
+            )
+            RippleAndNoise.append(
+                Instance(
+                    OutputNumber="1",
+                    InputVoltage="NominalLine",
+                    OutputCurrent="MaximumLoad",
+                    AmbientTemperature="MinimumTemperature",
+                    ValueLabel=["PeakToPeak"],
                     Range={
                         "Lower": None,
                         "Upper": {
@@ -1311,7 +1270,25 @@ for record in main_record_rows:
                     OutputNumber="2",
                     InputVoltage="NominalLine",
                     OutputCurrent="MaximumLoad",
-                    ValueLabel=["PeakToPeakExtreme"],
+                    AmbientTemperature="MaximumTemperature",
+                    ValueLabel=["PeakToPeak"],
+                    Range={
+                        "Lower": None,
+                        "Upper": {
+                            "Value": record.get('漣波及雜7'),
+                            "Unit": "millivolt",
+                            "SignalType": "P-P"
+                        }
+                    }
+                )
+            )
+            RippleAndNoise.append(
+                Instance(
+                    OutputNumber="2",
+                    InputVoltage="NominalLine",
+                    OutputCurrent="MaximumLoad",
+                    AmbientTemperature="MinimumTemperature",
+                    ValueLabel=["PeakToPeak"],
                     Range={
                         "Lower": None,
                         "Upper": {
@@ -1329,7 +1306,8 @@ for record in main_record_rows:
                     OutputNumber="1",
                     InputVoltage="NominalLine",
                     OutputCurrent="MaximumLoad",
-                    ValueLabel=["QuadraticMeanMaximum"],
+                    AmbientTemperature="RoomTemperature",
+                    ValueLabel=["QuadraticMean"],
                     Range={
                         "Lower": None,
                         "Upper": {
@@ -1347,7 +1325,8 @@ for record in main_record_rows:
                     OutputNumber="2",
                     InputVoltage="NominalLine",
                     OutputCurrent="MaximumLoad",
-                    ValueLabel=["QuadraticMeanMaximum"],
+                    AmbientTemperature="RoomTemperature",
+                    ValueLabel=["QuadraticMean"],
                     Range={
                         "Lower": None,
                         "Upper": {
@@ -1555,7 +1534,7 @@ for record in main_record_rows:
             } if record.get('遠端控制電壓最大值-ON') else None
             RemoteControlInputVoltage.append(
                 Instance(
-                    RemoteControlMode="working",
+                    RemoteControlMode="Working",
                     Range={
                         "Lower": Lower,
                         "Upper": Upper
@@ -1576,7 +1555,7 @@ for record in main_record_rows:
             } if record.get('遠端控制電壓最大值-OFF') else None
             RemoteControlInputVoltage.append(
                 Instance(
-                    RemoteControlMode="standby",
+                    RemoteControlMode="Standby",
                     Range={
                         "Lower": Lower,
                         "Upper": Upper
@@ -1639,7 +1618,7 @@ for record in main_record_rows:
             } if upper_value else None
             RemoteControlInputCurrent.append(
                 Instance(
-                    RemoteControlMode="working",
+                    RemoteControlMode="Working",
                     Range={
                         "Lower": Lower,
                         "Upper": Upper
@@ -1700,7 +1679,7 @@ for record in main_record_rows:
             } if upper_value else None
             RemoteControlInputCurrent.append(
                 Instance(
-                    RemoteControlMode="standby",
+                    RemoteControlMode="Standby",
                     Range={
                         "Lower": Lower,
                         "Upper": Upper
@@ -1785,6 +1764,72 @@ for record in main_record_rows:
                         }
                     )
                 )
+        # 絕緣電阻
+        InsulationResistance = []
+        if record.get('輸入對輸2'):
+            unit = None
+            if record.get('輸入對輸出絕緣電阻(MIN)') == 'GΩ' or record.get('輸入對輸出絕緣電阻(MIN)') == 'G[':
+                unit = 'gigaohm'
+            elif record.get('輸入對輸出絕緣電阻(MIN)') == 'MΩ' or record.get('輸入對輸出絕緣電阻(MIN)') == 'M[':
+                unit = 'megaohm'
+            else:
+                unit = None # 缺值，無預設值
+                raise ValueError(f'"{record.get("主型號")}"."絕緣電阻"單位缺值或不合規定。實際值: "{record.get('輸入對輸出絕緣電阻(MIN)')}"，可接受值: "GΩ" or "MΩ"')
+                
+            Lower = {
+                "Value": record.get('輸入對輸2'),
+                "Unit": unit,
+                "SignalType": None
+            }
+            InsulationResistance = [
+                Instance(
+                    ComponentsGroup1="AllInputPins",
+                    ComponentsGroup2="AllOutputPins",
+                    Range={
+                        "Lower": Lower,
+                        "Upper": None
+                    }
+                )
+            ]
+        # 絕緣電容
+        InsulationCapacitance = []
+        if record.get('輸入對輸4'):
+            Upper = {
+                "Value": record.get('輸入對輸4'),
+                "Unit": "picofarad",
+                "SignalType": None
+            }
+            InsulationCapacitance = [
+                Instance(
+                    ComponentsGroup1="AllInputPins",
+                    ComponentsGroup2="AllOutputPins",
+                    Range={
+                        "Lower": None,
+                        "Upper": Upper
+                    }
+                )
+            ]
+        # 交換頻率
+        SwitchingFrequency = []
+        if record.get('交換頻率最') or record.get('交換頻率2'):
+            Lower = {
+                "Value": record.get('交換頻率最'),
+                "Unit": "hertz",
+                "SignalType": None
+            } if record.get('交換頻率最') else None        
+            Upper = {
+                "Value": record.get('交換頻率2'),
+                "Unit": "hertz",
+                "SignalType": None
+            } if record.get('交換頻率2') else None
+            SwitchingFrequency = [
+                Instance(
+                    Range={
+                        "Lower": Lower,
+                        "Upper": Upper
+                    }
+                )
+            ]
 
 
         # 產品元數據、分類信息
@@ -1815,15 +1860,12 @@ for record in main_record_rows:
             StartupThresholdVoltage=GS_StartupThresholdVoltage,
             UndervoltageShutdownVoltage=GS_UndervoltageShutdownVoltage,
             IsolationVoltage=IsolationVoltage,
-            IsolationResistance=IsolationResistance,
-            IsolationCapacitance=IsolationCapacitance,
             OutputVoltageTrimResistance=OutputVoltageTrimResistance,
-            SwitchingFrequency=SwitchingFrequency
         )
 
         inspection_attributes = InspectionAttributes(
             InputCurrent=QT_InputCurrent,
-            InputReflectedRippleCurrent=InputReflectedRippleCurrent,
+            ReflectedInputRippleCurrent=ReflectedInputRippleCurrent,
             OutputVoltage=QT_OutputVoltage,
             OutputVoltageAccuracy=OutputVoltageAccuracy,
             OutputVoltageBalance=OutputVoltageBalance,
@@ -1840,7 +1882,10 @@ for record in main_record_rows:
             OverloadCurrentProtection=OverloadCurrentProtection,
             RemoteControlInputVoltage=RemoteControlInputVoltage,
             RemoteControlInputCurrent=RemoteControlInputCurrent,
-            OutputVoltageTrimRange=OutputVoltageTrimRange
+            OutputVoltageTrimRange=OutputVoltageTrimRange,
+            InsulationResistance=InsulationResistance,
+            InsulationCapacitance=InsulationCapacitance,
+            SwitchingFrequency=SwitchingFrequency,
         )
 
         inspections = {
@@ -1866,7 +1911,7 @@ for record in main_record_rows:
             product.validate()
             products.append(product)
         except ValidationError as e:
-            print(f"{product.Model} 格式驗證報錯跳過 : {e}")
+            print(f"{product.ModelNumber} 格式驗證報錯跳過 : {e}")
             continue
     except ValueError as e:
         print(f'遺棄{record.get('主型號')}整筆資料。報錯原因: {e}')

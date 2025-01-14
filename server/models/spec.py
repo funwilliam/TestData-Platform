@@ -185,11 +185,8 @@ class InspectionParameters(EmbeddedDocument):
         CapacitiveLoad (list of LoadInstance): 電容負載的實例列表。
         StartUpThresholdVoltage (list of Instance): 啟動臨界電壓的實例列表。
         UndervoltageShutdownVoltage (list of Instance): 欠壓關斷電壓的實例列表。
-        IsolationVoltage (list of Instance): 絕緣電壓的實例列表。
-        IsolationResistance (list of Instance): 絕緣電阻的實例列表。
-        IsolationCapacitance (list of Instance): 絕緣電容的實例列表。
         OutputVoltageTrimResistance (list of Instance): 輸出電壓調整電阻的實例列表。
-        SwitchingFrequency (list of Instance): 交換頻率的實例列表。
+        IsolationVoltage (list of Instance): 絕緣電壓測試值的實例列表。
     """
     Component = MapField(field=ListField(EmbeddedDocumentField(ComponentInstance)))
     IO = MapField(field=ListField(EmbeddedDocumentField(IOInstance)))
@@ -202,11 +199,8 @@ class InspectionParameters(EmbeddedDocument):
     CapacitiveLoad = ListField(EmbeddedDocumentField(LoadInstance))
     StartupThresholdVoltage = ListField(EmbeddedDocumentField(Instance))
     UndervoltageShutdownVoltage = ListField(EmbeddedDocumentField(Instance))
-    IsolationVoltage = ListField(EmbeddedDocumentField(Instance))
-    IsolationResistance = ListField(EmbeddedDocumentField(Instance))
-    IsolationCapacitance = ListField(EmbeddedDocumentField(Instance))
     OutputVoltageTrimResistance = ListField(EmbeddedDocumentField(Instance))
-    SwitchingFrequency = ListField(EmbeddedDocumentField(Instance))
+    IsolationVoltage = ListField(EmbeddedDocumentField(Instance))
 
 class InspectionAttributes(EmbeddedDocument):
     """
@@ -214,7 +208,7 @@ class InspectionAttributes(EmbeddedDocument):
 
     Attributes:
         InputCurrent (list of Instance): 輸入電流的實例列表。
-        InputReflectedRippleCurrent (list of Instance): 反射漣波電流的實例列表。
+        ReflectedInputRippleCurrent (list of Instance): 反射輸入漣波電流的實例列表。
         OutputVoltage (list of Instance): 輸出電壓的實例列表。
         OutputVoltageAccuracy (list of Instance): 輸出電壓精度的實例列表。
         OutputVoltageBalance (list of Instance): 輸出電壓平衡的實例列表。
@@ -232,9 +226,12 @@ class InspectionAttributes(EmbeddedDocument):
         RemoteControlInputVoltage (list of Instance): 遠端控制輸入電壓的實例列表。
         RemoteControlInputCurrent (list of Instance): 遠端控制輸入電流的實例列表。
         OutputVoltageTrimRange (list of Instance): 輸出電壓調整範圍的實例列表。
+        InsulationResistance (list of Instance): 絕緣電阻的實例列表。
+        InsulationCapacitance (list of Instance): 絕緣電容的實例列表。
+        SwitchingFrequency (list of Instance): 交換頻率的實例列表。
     """
     InputCurrent = ListField(EmbeddedDocumentField(Instance))
-    InputReflectedRippleCurrent = ListField(EmbeddedDocumentField(Instance))
+    ReflectedInputRippleCurrent = ListField(EmbeddedDocumentField(Instance))
     OutputVoltage = ListField(EmbeddedDocumentField(Instance))
     OutputVoltageAccuracy = ListField(EmbeddedDocumentField(Instance))
     OutputVoltageBalance = ListField(EmbeddedDocumentField(Instance))
@@ -252,6 +249,9 @@ class InspectionAttributes(EmbeddedDocument):
     RemoteControlInputVoltage = ListField(EmbeddedDocumentField(Instance))
     RemoteControlInputCurrent = ListField(EmbeddedDocumentField(Instance))
     OutputVoltageTrimRange = ListField(EmbeddedDocumentField(Instance))
+    InsulationResistance = ListField(EmbeddedDocumentField(Instance))
+    InsulationCapacitance = ListField(EmbeddedDocumentField(Instance))
+    SwitchingFrequency = ListField(EmbeddedDocumentField(Instance))
 
 class Inspection(EmbeddedDocument):
     """
