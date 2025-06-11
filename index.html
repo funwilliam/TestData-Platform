@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Data Manager</title>
+    <title>Test Data Management Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-PI8n5gCcz9cQqQXm3PEtDuPG8qx9oFsFctPg0S5zb8g=" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-daterangepicker@3.1.0/daterangepicker.css" rel="stylesheet" integrity="sha256-lP22bsj+dImBpPIJD99KKgo9vlrOLmXEzkbpXWkr2sc=" crossorigin="anonymous">
@@ -60,7 +60,6 @@
         }
         /* Main Content */
         .main-content {
-            padding: 0px;
             display: flex;
             flex-direction: column;
             min-height: 100vh; /* 占满视口高度 */
@@ -68,10 +67,23 @@
         .top-bar {
             background-color: rgb(0, 131, 183);
             color: white;
-            padding: 15px;
-            margin-bottom: 20px;
             font-weight: bold;
             font-size: 1.5rem;
+            height: 66px; /* 確保固定高度 */
+            min-height: 60px; /* 允許微小調整 */
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* 讓左右元素保持對齊 */
+            padding: 0 15px;
+            margin-bottom: 20px;
+            overflow: hidden; /* 避免內容溢出導致高度變大 */
+        }
+        #toggle-sidebar {
+            font-size: 1.2rem;
+        }
+        #network-status {
+            font-size: 0.9rem;
+            color: white;
         }
         /* Content */
         .content {
@@ -159,15 +171,15 @@
             <div class="col-md-2 sidebar d-flex flex-column">
                 <h4>MINMAX</h4>
 
-                <div class="section-title">數據輸入與匯出</div>
-                <a href="#" class="nav-item">手動輸入</a>
-                <a href="#" class="nav-item">檔案匯入</a>
-
                 <div class="section-title">數據庫管理</div>
-                <a href="#" class="nav-item">標準條件設置</a>
-                <a href="#" class="nav-item">數據查詢</a>
-                <a href="#" class="nav-item">歷史比對</a>
-                <a href="#" class="nav-item">異常值追蹤</a>
+                <a href="/" class="nav-item">數據查詢</a>
+                <a href="/history-compare" class="nav-item">歷史比對</a>
+                <a href="/exception-tracking" class="nav-item">異常值追蹤</a>
+                <a href="/standard-conditions" class="nav-item">標準條件設置</a>
+
+                <div class="section-title">數據輸入與匯出</div>
+                <a href="/manual-input" class="nav-item">手動輸入</a>
+                <a href="/file-import" class="nav-item">檔案匯入</a>
 
                 <div class="section-title">圖表分析</div>
                 <a href="#" class="nav-item">各別標準圖表</a>
@@ -183,16 +195,16 @@
                 <a href="#" class="nav-item">權限修改</a>
 
                 <div class="section-title">API 串接說明</div>
-                <a href="#" class="nav-item">API 說明</a>
+                <a href="http://192.168.1.109/minmax-api-server/docs" class="nav-item">API 說明</a>
 
-                <div class="footer">
-                    李xx 登入時間<br>
+                <div class="footer">甘經理 登入時間
+                    <br>
                     <a href="#">登出</a>
                 </div>
             </div>
 
             <!-- Main Content -->
-            <div class="col-md-10 main-content  d-flex flex-column">
+            <div class="col-md-10 p-0 main-content d-flex flex-column">
                 <!-- Header -->
                 <header class="top-bar">測試數據整合平台</header>
 
@@ -235,7 +247,7 @@
                         </div>
                     </div>
 
-                    <div class="ms-1 mt-4 mb-4">已查詢到2筆</div>
+                    <div id="searchResultQuantity" class="ms-1 mt-4 mb-4">已查詢到2筆</div>
 
                     <!-- Data Table -->
                     <div class="table-container">
@@ -287,6 +299,43 @@
             </div>
         </div>
     </div>
+    <!-- Detail Modal -->
+    <div class="modal fade" id="recordDetailModal" tabindex="-1" aria-labelledby="recordDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="recordDetailModalLabel">詳細數據</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Basic Information -->
+                    <div id="basicInfo" class="mb-4">
+                        <!-- 信息会通过 JavaScript 填充 -->
+                    </div>
+                    <!-- Measured Results -->
+                    <h6>測試結果</h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Data Type</th>
+                                    <th>Output Number</th>
+                                    <th>Input Voltage</th>
+                                    <th>Output Current</th>
+                                    <th>Value</th>
+                                    <th>Unit</th>
+                                    <th>Signal Type</th>
+                                </tr>
+                            </thead>
+                            <tbody id="measuredResults">
+                                <!-- 測試結果數據會通過 JavaScript 填充 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" integrity="sha256-rMfkFFWoB2W1/Zx+4bgHim0WC7vKRVrq6FTeZclH1Z4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js" integrity="sha256-xoh0y6ov0WULfXcLMoaA6nZfszdgI8w2CEJ/3k8NBIE=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/danfojs@1.1.2/lib/bundle.js" integrity="sha256-b4/iTif0LxfGrbF3LLsHwg852tbYcHbLpHMJnY3PsTo=" crossorigin="anonymous"></script>
@@ -301,8 +350,88 @@
             const apiKey = '58a702a6-335999a3-a987b4e5-8647f1b6';
             const apiServerIP = '192.168.1.109';
             const serverName = 'minmax-api-server';
+            const nameMappings = (() => {
+                const data = {
+                    DataType: {
+                        Component: "元件",
+                        IO: "輸入輸出", 
+                        AmbientTemperature: "環境溫度",
+                        InputVoltage: "輸入電壓",
+                        OutputVoltage: "輸出電壓",
+                        OutputCurrent: "輸出電流",
+                        OutputPower: "輸出功率",
+                        ResistiveLoad: "電阻負載",
+                        CapacitiveLoad: "電容負載",
+                        StartUpThresholdVoltage: "啟動臨界電壓",
+                        UndervoltageShutdownVoltage: "欠壓關斷電壓",
+                        OutputVoltageTrimResistance: "輸出電壓調整電阻",
+                        IsolationVoltage: "絕緣電壓測試值",
+                        InputCurrent: "輸入電流",
+                        ReflectedInputRippleCurrent: "反射輸入漣波電流",
+                        OutputVoltageAccuracy: "輸出電壓準確率",
+                        OutputVoltageBalance: "輸出電壓平衡率",
+                        LoadRegulation: "負載調整率",
+                        LineRegulation: "線性調整率",
+                        RippleAndNoise: "漣波與雜訊",
+                        TransientRecoveryTime: "暫態恢復時間",
+                        TransientResponseDeviation: "暫態響應偏差",
+                        Overshoot: "過沖",
+                        Efficiency: "效率",
+                        ShortCircuitProtectionFrequency: "短路保護操作頻率",
+                        ShortCircuitProtectionInputPower: "短路保護輸入功率",
+                        ShortCircuitProtectionInputCurrent: "短路保護輸入電流",
+                        OverloadCurrentProtection: "過負載電流保護",
+                        RemoteControlInputVoltage: "遠端控制輸入電壓",
+                        RemoteControlInputCurrent: "遠端控制輸入電流",
+                        OutputVoltageTrimRange: "輸出電壓調整範圍",
+                        InsulationResistance: "絕緣電阻",
+                        InsulationCapacitance: "絕緣電容",
+                        SwitchingFrequency: "切換頻率",
+                        LeakageCurrent: "漏電流",
+                    },
+                    InspectionStage: { SemiProduct: "半成品", FinalProduct: "成品" },
+                    InputVoltage: { LowLine: "L", NominalLine: "N", HighLine: "H" },
+                    OutputCurrent: { NoLoad: "空載", MinimumLoad: "輕載", MaximumLoad: "滿載" }
+                };
+                return {
+                    get: (category, key) => data[category]?.[key] || null,
+                    set: (category, key, value) => {
+                        if (!data[category]) data[category] = {};
+                        data[category][key] = value;
+                    }
+                };
+            })();
+            const unitSimplifier = (() => {
+                const prefixes = {
+                    quecto: "q", ronto: "r", yocto: "y", zepto: "z", atto: "a",
+                    femto: "f", pico: "p", nano: "n", micro: "µ", milli: "m",
+                    centi: "c", deci: "d", deca: "da", hecto: "h", kilo: "k",
+                    mega: "M", giga: "G", tera: "T", peta: "P", exa: "E",
+                    zetta: "Z", yotta: "Y", ronna: "R", quetta: "Q"
+                };
+
+                const units = {
+                    meter: "m", second: "s", ampere: "A", candela: "cd",
+                    gram: "g", mole: "mol", kelvin: "K", radian: "rad",
+                    bit: "bit", count: "count", percent: "%", degree: "°",
+                    liter: "L", hertz: "Hz", newton: "N", pascal: "Pa",
+                    joule: "J", watt: "W", volt: "V", ohm: "Ω",
+                    farad: "F", weber: "Wb", tesla: "T", henry: "H"
+                };
+
+                const aliases = {
+                    degC: "°C",
+                };
+
+                return { prefixes, units, aliases };
+            })();
+            const recordMap = new Map();
 
             async function fetchProductList() {
+                if (!(apiServerIP && serverName) || !apiKey) {
+                    throw new Error('Base URL or API Key is not defined');
+                }
+
                 try {
                     const url = new URL(`http://${apiServerIP}/${serverName}/products/list`);
                     // 發送GET請求
@@ -339,18 +468,22 @@
                 }
 
                 try {
-                    const queryParams = new URLSearchParams({
-                        model_number: modelNumber || null,
-                        manufacturing_order_number: manufacturingOrderNumber || null,
-                        inspection_stage: inspectionStage || null,
-                        start_date: startDate || null,
-                        end_date: endDate || null,
-                    });
+                    const queryParams = new URLSearchParams();
 
-                    // Prevent empty query if all parameters are null
-                    if (!queryParams.toString()) {
-                        console.warn('No query parameters provided. Skipping request.');
-                        return null;
+                    if (modelNumber) {
+                        queryParams.append('model_number', modelNumber);
+                    }
+                    if (manufacturingOrderNumber) {
+                        queryParams.append('manufacturing_order_number', manufacturingOrderNumber);
+                    }
+                    if (inspectionStage) {
+                        queryParams.append('inspection_stage', inspectionStage);
+                    }
+                    if (startDate) {
+                        queryParams.append('start_date', startDate);
+                    }
+                    if (endDate) {
+                        queryParams.append('end_date', endDate);
                     }
 
                     const url = new URL(`http://${apiServerIP}/${serverName}/product/inspection/records?${queryParams.toString()}`);
@@ -371,6 +504,40 @@
                     console.error('Fetch failed:', error);
                     throw new Error('Failed to fetch inspection records');
                 }
+            }
+
+            /**
+             * Simplify a unit string to its short form.
+             * @param {string} unitString - The full unit string from the API.
+             * @returns {string} - The simplified unit symbol.
+             */
+            function simplifyUnit(unitString) {
+                if (!unitString) return "";
+
+                // Check aliases first
+                if (unitSimplifier.aliases[unitString]) {
+                    return unitSimplifier.aliases[unitString];
+                }
+
+                // Check for exact match in units
+                if (unitSimplifier.units[unitString.toLowerCase()]) {
+                    return unitSimplifier.units[unitString.toLowerCase()];
+                }
+
+                // Match prefix and base unit
+                const prefixPattern = Object.keys(unitSimplifier.prefixes).join("|");
+                const regex = new RegExp(`^(${prefixPattern})(.+)$`, "i");
+                const match = unitString.match(regex);
+
+                if (match) {
+                    const prefixSymbol = unitSimplifier.prefixes[match[1].toLowerCase()] || "";
+                    const baseUnitSymbol = unitSimplifier.units[match[2].toLowerCase()] || match[2];
+                    return `${prefixSymbol}${baseUnitSymbol}`;
+                }
+
+                // If no match, return original string
+                console.warn(`Unmatched unit: ${unitString}`);
+                return unitString;
             }
 
             // 為指定的 <select> OR <datalist> 設置選項，首先清除所有現有選項，然後添加一個預設選項和選項清單
@@ -423,12 +590,11 @@
                         format: 'YYYY/MM/DD',
                         separator: ' - ',
                         applyLabel: '確認',
-                        cancelLabel: '取消',
+                        cancelLabel: '清除',
                         customRangeLabel: '自訂範圍',
                         daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
                         monthNames: ['1 月', '2 月', '3 月', '4 月', '5 月', '6 月', '7 月', '8 月', '9 月', '10 月', '11 月', '12 月'],
                         firstDay: 1,
-                        cancelLabel: 'Clear',
                     },
                     startDate: moment(),
                     endDate: moment(),
@@ -453,6 +619,54 @@
                 testDateRangeElement.daterangepicker.setStartDate(moment().subtract(30, 'days'));
                 testDateRangeElement.daterangepicker.setEndDate(moment());
                 testDateRangeElement.value = moment().subtract(30, 'days').format('YYYY/MM/DD') + ' - ' + moment().format('YYYY/MM/DD');
+                // testDateRangeElement.value = '';
+            }
+
+            /**
+             * Display detailed record information in the modal.
+             * 
+             * @param {string} recordId - The selected record data.
+             */
+            function showRecordDetails(recordId) {
+                record = recordMap.get(recordId);
+
+                // 填充基本信息
+                const basicInfoElement = document.getElementById('basicInfo');
+                basicInfoElement.innerHTML = `
+                    <p><strong>紀錄編號：</strong> ${record.RecordId || 'N/A'}</p>
+                    <p><strong>產品型號：</strong> ${record.ModelNumber || 'N/A'}</p>
+                    <p><strong>工單號碼：</strong> ${record.ManufacturingOrderNumber || 'N/A'}</p>
+                    <p><strong>檢測階段：</strong> ${nameMappings.get("InspectionStage", record.InspectionStage) || 'N/A'}</p>
+                    <p><strong>檢測方式：</strong> ${record.TestMethod || 'N/A'}</p>
+                    <p><strong>完成時間：</strong> ${moment(record.FinishAt).format('YYYY/MM/DD HH:mm') || 'N/A'}</p>
+                    <p><strong>環境溫度：</strong> ${record.AmbientTemperature?.Value || 'N/A'} ${simplifyUnit(record.AmbientTemperature?.Unit) || ''}</p>
+                `;
+
+                // 填充測試結果
+                const measuredResultsElement = document.getElementById('measuredResults');
+                measuredResultsElement.innerHTML = ''; // 清空原有内容
+                if (record.MeasuredResultTable && record.MeasuredResultTable.length > 0) {
+                    record.MeasuredResultTable.forEach(result => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${nameMappings.get("DataType", result.DataType) || 'N/A'}</td>
+                            <td>${result.OutputNumber || '-'}</td>
+                            <td>${nameMappings.get("InputVoltage", result.InputVoltage) || '-'}</td>
+                            <td>${nameMappings.get("OutputCurrent", result.OutputCurrent) || '-'}</td>
+                            <td>${result.ExactValue?.Value || 'N/A'}</td>
+                            <td>${simplifyUnit(result.ExactValue?.Unit) || 'N/A'}</td>
+                            <td>${result.ExactValue?.SignalType || '-'}</td>
+                        `;
+                        measuredResultsElement.appendChild(row);
+                    });
+                }
+                else {
+                    measuredResultsElement.innerHTML = '<tr><td colspan="7" class="text-center">無測試結果</td></tr>';
+                }
+
+                // 顯示模態框
+                const modal = new bootstrap.Modal(document.getElementById('recordDetailModal'));
+                modal.show();
             }
 
             /**
@@ -482,20 +696,33 @@
                 records.forEach((record) => {
                     const row = document.createElement('tr');
 
+                    inspectionStage = record.InspectionStage === 'FinalProduct' ? '成品' : record.InspectionStage === 'SemiProduct' ? '半成品' : null;
+                    finishAt = record.FinishAt ? moment(record.FinishAt).format('YYYY/MM/DD HH:mm') : null;
+
+                    row.id = `RecordDisplayTableRow-${record.RecordId}`;
                     row.innerHTML = `
                         <td><span class="status-indicator ${record.statusColor || 'gray'}"></span> ${record.status || 'N/A'}</td>
-                        <td>${record.model || 'N/A'}</td>
-                        <td>${record.order || 'N/A'}</td>
-                        <td>${record.phase || 'N/A'}</td>
-                        <td>${record.temperature || 'N/A'}</td>
-                        <td>${record.testDateTime || 'N/A'}</td>
+                        <td>${record.ModelNumber || 'N/A'}</td>
+                        <td>${record.ManufacturingOrderNumber || 'N/A'}</td>
+                        <td>${inspectionStage || 'N/A'}</td>
+                        <td>${record.AmbientTemperature.Value || 'N/A'}</td>
+                        <td>${finishAt || 'N/A'}</td>
                         <td>
-                            <button class="btn btn-info btn-sm" onclick="viewData('${record.model}')">查看數據</button>
-                            <button class="btn btn-danger btn-sm" onclick="exportChart('${record.model}')">輸出圖表</button>
+                            <button class="btn btn-info btn-sm view-details-btn">查看數據</button>
+                            <button class="btn btn-danger btn-sm export-chart-btn">輸出圖表</button>
                         </td>
                     `;
 
+                    // Append row to tbody
                     tbody.appendChild(row);
+
+                    // Attach event listener for "查看數據"
+                    const viewDetailsButton = row.querySelector('.view-details-btn');
+                    viewDetailsButton.addEventListener('click', () => showRecordDetails(record.RecordId));
+
+                    // Attach event listener for "輸出圖表"
+                    // const exportChartButton = row.querySelector('.export-chart-btn');
+                    // exportChartButton.addEventListener('click', () => exportChart(record.ModelNumber));
                 });
             }
 
@@ -558,9 +785,16 @@
                         params.endDate
                     );
 
-                    // Refresh table with new records
-                    reloadRecordDisplayTable(records);
-                } catch (error) {
+                    // Cache records into a Map for quick lookup by RecordId
+                    records.data.forEach((record) => { recordMap.set(record.RecordId, record); });
+
+                    // Refresh the record display table with the newly fetched records
+                    reloadRecordDisplayTable(records.data);
+
+                    // Update the displayed quantity of records in the search result
+                    document.getElementById('searchResultQuantity').innerText = `已查詢到 ${records.data ? records.data.length : 0} 筆`;
+                }
+                catch (error) {
                     console.error('Error handling search button click:', error);
                 }
             }

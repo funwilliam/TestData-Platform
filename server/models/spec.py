@@ -175,7 +175,7 @@ class InspectionParameters(EmbeddedDocument):
 
     Attributes:
         Component (Dict[str, List[ComponentInstance]]): 元件的分類與實例列表。
-        IO (Dict[str, List[IOInstance]]): 輸入的實例列表。
+        IO (Dict[str, List[IOInstance]]): 輸入輸出的實例列表。
         AmbientTemperature (list of Instance): 操作環境溫度的實例列表。
         InputVoltage (list of Instance): 輸入電壓的實例列表。
         OutputVoltage (list of Instance): 輸出電壓的實例列表。
@@ -183,7 +183,7 @@ class InspectionParameters(EmbeddedDocument):
         OutputPower (list of Instance): 輸出功率的實例列表。
         ResistiveLoad (list of LoadInstance): 電阻負載的實例列表。
         CapacitiveLoad (list of LoadInstance): 電容負載的實例列表。
-        StartUpThresholdVoltage (list of Instance): 啟動臨界電壓的實例列表。
+        StartupThresholdVoltage (list of Instance): 啟動臨界電壓的實例列表。
         UndervoltageShutdownVoltage (list of Instance): 欠壓關斷電壓的實例列表。
         OutputVoltageTrimResistance (list of Instance): 輸出電壓調整電阻的實例列表。
         IsolationVoltage (list of Instance): 絕緣電壓測試值的實例列表。
@@ -210,11 +210,11 @@ class InspectionAttributes(EmbeddedDocument):
         InputCurrent (list of Instance): 輸入電流的實例列表。
         ReflectedInputRippleCurrent (list of Instance): 反射輸入漣波電流的實例列表。
         OutputVoltage (list of Instance): 輸出電壓的實例列表。
-        OutputVoltageAccuracy (list of Instance): 輸出電壓精度的實例列表。
-        OutputVoltageBalance (list of Instance): 輸出電壓平衡的實例列表。
+        OutputVoltageAccuracy (list of Instance): 輸出電壓準確率的實例列表。
+        OutputVoltageBalance (list of Instance): 輸出電壓平衡率的實例列表。
         LoadRegulation (list of Instance): 負載調整率的實例列表。
-        LineRegulation (list of Instance): 線路調整率的實例列表。
-        RippleAndNoise (list of Instance): 紋波與噪聲的實例列表。
+        LineRegulation (list of Instance): 線性調整率的實例列表。
+        RippleAndNoise (list of Instance): 漣波與雜訊的實例列表。
         TransientRecoveryTime (list of Instance): 暫態恢復時間的實例列表。
         TransientResponseDeviation (list of Instance): 暫態響應偏差的實例列表。
         Overshoot (list of Instance): 過沖的實例列表。
@@ -222,13 +222,13 @@ class InspectionAttributes(EmbeddedDocument):
         ShortCircuitProtectionFrequency (list of Instance): 短路保護操作頻率的實例列表。
         ShortCircuitProtectionInputPower (list of Instance): 短路保護輸入功率的實例列表。
         ShortCircuitProtectionInputCurrent (list of Instance): 短路保護輸入電流的實例列表。
-        OverloadCurrentProtection (list of Instance): 過載保護的實例列表。
+        OverloadCurrentProtection (list of Instance): 過負載電流保護的實例列表。
         RemoteControlInputVoltage (list of Instance): 遠端控制輸入電壓的實例列表。
         RemoteControlInputCurrent (list of Instance): 遠端控制輸入電流的實例列表。
         OutputVoltageTrimRange (list of Instance): 輸出電壓調整範圍的實例列表。
         InsulationResistance (list of Instance): 絕緣電阻的實例列表。
         InsulationCapacitance (list of Instance): 絕緣電容的實例列表。
-        SwitchingFrequency (list of Instance): 交換頻率的實例列表。
+        SwitchingFrequency (list of Instance): 切換頻率的實例列表。
     """
     InputCurrent = ListField(EmbeddedDocumentField(Instance))
     ReflectedInputRippleCurrent = ListField(EmbeddedDocumentField(Instance))
